@@ -21,6 +21,7 @@ from DisplayableCube import DisplayableCube
 from DisplayableSphere import DisplayableSphere
 from DisplayableTorus import DisplayableTorus
 
+
 class SceneOne(Component, Animation):
     lights = None
     lightCubes = None
