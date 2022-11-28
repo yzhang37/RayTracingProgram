@@ -74,15 +74,43 @@ class DisplayableTorus(Displayable):
         self.generate(innerRadius, outerRadius, nsides, rings, color)
 
     def generate(self, innerRadius=0.25, outerRadius=0.5, nsides=36, rings=36, color=ColorType.SOFTBLUE):
+        # Surface parameter:
+        #   x = (a + b * cos(v)) * cos(u)
+        #   y = (a + b * cos(v)) * sin(u)
+        #   z = b * sin(v)
+        #   where a = (outer + inner) / 2, b = (outer - inner) / 2
+
+        # The normal vector equation:
+        #   nx = b * cos(u) * cos(v) * (a + b * cos(v))
+        #   ny = b * sin(u) * cos(v) * (a + b * cos(v))
+        #   nz = b * sin(v) * (a + b * cos(v))
+        # Normalization:
+        #   nx = sign(b) * cos(u) * cos(v) * sign(a + b * cos(v))
+        #   ny = sign(b) * sin(u) * cos(v) * sign(a + b * cos(v))
+        #   nz = sign(b) * sin(v) * sign(a + b * cos(v))
+        #
+        # Among then, a + b * cos(v), cos(u), sin(u), cos(v), sin(v) appears many times, so we can
+        #   pre-compute them.
+
+        if innerRadius > outerRadius:
+            innerRadius, outerRadius = outerRadius, innerRadius
+
         self.innerRadius = innerRadius
         self.outerRadius = outerRadius
         self.nsides = nsides
         self.rings = rings
         self.color = color
 
-        # we need to pad one more row for both nsides and rings, to assign correct texture coord to them
-        self.vertices = np.zeros([(nsides) * (rings), 11])
+        a = (outerRadius + innerRadius) / 2
+        b = (outerRadius - innerRadius) / 2
 
+        if b == 0:
+            self.vertices = np.zeros((0, 11))
+            self.indices = np.zeros(0)
+            return
+
+        # we need to pad one more row for both nsides and rings, to assign correct texture coord to them
+        self.vertices = np.zeros((nsides * rings, 11))
         self.indices = np.zeros(0)
 
     def draw(self):
