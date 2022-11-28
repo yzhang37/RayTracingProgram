@@ -1,6 +1,6 @@
 '''
 This is the main entry of your program. Almost all things you need to implement are in this file.
-The main class Sketch inherits from CanvasBase. For the parts you need to implement, they are all marked with TODO.
+The main class Sketch inherits from CanvasBase. For the parts you need to implement, they are all marked with TO DO.
 First version Created on 09/28/2018
 
 :author: micou(Zezhou Sun)

@@ -59,136 +59,71 @@ class DisplayableSphere(Displayable):
         self.shaderProg.use()
 
         self.vao = VAO()
-        self.vbo = VBO()  # vbo can only be initiate with glProgram activated
+        self.vbo = VBO()  # vbo can only be initiated with glProgram activated
         self.ebo = EBO()
 
         self.generate(radius, color)
 
-    def generate(self, radius=1, color=None):
+    def generate(self, radius=1, color=None, slices=30, stacks=30):
         # self.length = length
         # self.width = width
         # self.height = height
         self.color = color
         pi = math.pi
 
-        sphere_vertices = np.zeros([31,31,3])
-        sphere_normals = np.zeros([31,31,3])
-        for i,phi in enumerate(np.arange(-pi/2,pi/2+pi/30,pi/30)):
-            for j,theta in enumerate(np.arange(-pi,pi+pi/15,2*pi/30)):
-                x = radius*math.cos(phi)*math.cos(theta)
-                y = radius*math.cos(phi)*math.sin(theta)
-                z = radius*math.sin(phi)
+        slices_1 = slices + 1
+        stacks_1 = stacks + 1
+        # sphere_vertices = np.zeros([slices + 1, stacks + 1, 3])
+        # sphere_normals = np.zeros([slices + 1, stacks + 1, 3])
+        sphere_vbo_data = np.zeros((slices_1 * stacks_1, 9))
+        sphere_indices = np.zeros((slices_1 * stacks_1, 6), dtype=np.uint32)
 
-                x_normal = math.cos(phi)*math.cos(theta)
-                y_normal = math.cos(phi)*math.sin(theta)
+        for i, phi in enumerate(np.arange(-pi / 2, pi / 2 + pi / slices, pi / slices)):
+            for j, theta in enumerate(np.arange(-pi, pi + pi / (stacks / 2), pi / (stacks / 2))):
+                x = radius * math.cos(phi) * math.cos(theta)
+                y = radius * math.cos(phi) * math.sin(theta)
+                z = radius * math.sin(phi)
+
+                x_normal = math.cos(phi) * math.cos(theta)
+                y_normal = math.cos(phi) * math.sin(theta)
                 z_normal = math.sin(phi)
 
-                sphere_vertices[i][j] = [x,y,z]
-                sphere_normals[i][j] = [x_normal,y_normal,z_normal]
+                # sphere_vertices[i][j] = [x, y, z]
+                # sphere_normals[i][j] = [x_normal, y_normal, z_normal]
 
-        triangle_list = []
-        for i in range(31):
-            for j in range(31):
-                if(i<30 and j<30):
-                    triangle_list.append(np.array([sphere_vertices[i][j][0],sphere_vertices[i][j][1]\
-                        ,sphere_vertices[i][j][2], sphere_normals[i][j][0],sphere_normals[i][j][1]\
-                        ,sphere_normals[i][j][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[i][j+1][0],sphere_vertices[i][j+1][1],\
-                        sphere_vertices[i][j+1][2],sphere_normals[i][j+1][0],sphere_normals[i][j+1][1],\
-                        sphere_normals[i][j+1][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[i+1][j+1][0],sphere_vertices[i+1][j+1][1],\
-                        sphere_vertices[i+1][j+1][2],sphere_normals[i+1][j+1][0],sphere_normals[i+1][j+1][1],\
-                        sphere_normals[i+1][j+1][2],*color]))
+                # Encoding vertex order using C array order
+                i_by_j = i * stacks_1 + j
+                sphere_vbo_data[i_by_j] = [x, y, z, x_normal, y_normal, z_normal, *color]
 
-                    triangle_list.append(np.array([sphere_vertices[i][j][0],sphere_vertices[i][j][1]\
-                        ,sphere_vertices[i][j][2], sphere_normals[i][j][0],sphere_normals[i][j][1]\
-                        ,sphere_normals[i][j][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[i+1][j][0],sphere_vertices[i+1][j][1],\
-                        sphere_vertices[i+1][j][2],sphere_normals[i+1][j][0],sphere_normals[i+1][j][1],\
-                        sphere_normals[i+1][j][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[i+1][j+1][0],sphere_vertices[i+1][j+1][1],\
-                        sphere_vertices[i+1][j+1][2],sphere_normals[i+1][j+1][0],sphere_normals[i+1][j+1][1],\
-                        sphere_normals[i+1][j+1][2],*color]))
-                elif(i==30 and j<30):
-                    triangle_list.append(np.array([sphere_vertices[i][j][0],sphere_vertices[i][j][1]\
-                        ,sphere_vertices[i][j][2],sphere_normals[i][j][0],sphere_normals[i][j][1]\
-                        ,sphere_normals[i][j][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[i][j+1][0],sphere_vertices[i][j+1][1],\
-                        sphere_vertices[i][j+1][2],sphere_normals[i][j+1][0],sphere_normals[i][j+1][1],\
-                        sphere_normals[i][j+1][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[0][j+1][0],sphere_vertices[0][j+1][1],\
-                        sphere_vertices[0][j+1][2],sphere_normals[0][j+1][0],sphere_normals[0][j+1][1],\
-                        sphere_normals[0][j+1][2],*color]))
+                # I've combined the two loops here so that the number of loops can be reduced.
+                i_1 = (i + 1) % slices_1
+                j_1 = (j + 1) % stacks_1
+                sphere_indices[i_by_j] = [
+                    i_by_j, i * stacks_1 + j_1, i_1 * stacks_1 + j_1,
+                    i_by_j, i_1 * stacks_1 + j, i_1 * stacks_1 + j_1]
 
-                    triangle_list.append(np.array([sphere_vertices[i][j][0],sphere_vertices[i][j][1]\
-                        ,sphere_vertices[i][j][2], sphere_normals[i][j][0],sphere_normals[i][j][1]\
-                        ,sphere_normals[i][j][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[0][j][0],sphere_vertices[0][j][1],\
-                        sphere_vertices[0][j][2],sphere_normals[0][j][0],sphere_normals[0][j][1],\
-                        sphere_normals[0][j][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[0][j+1][0],sphere_vertices[0][j+1][1],\
-                        sphere_vertices[0][j+1][2],sphere_normals[0][j+1][0],sphere_normals[0][j+1][1],\
-                        sphere_normals[0][j+1][2],*color]))
-                elif(i<30 and j==30):
-                    triangle_list.append(np.array([sphere_vertices[i][j][0],sphere_vertices[i][j][1]\
-                        ,sphere_vertices[i][j][2],sphere_normals[i][j][0],sphere_normals[i][j][1]\
-                        ,sphere_normals[i][j][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[i][0][0],sphere_vertices[i][0][1],\
-                        sphere_vertices[i][0][2],sphere_normals[i][0][0],sphere_normals[i][0][1],\
-                        sphere_normals[i][0][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[i+1][0][0],sphere_vertices[i+1][0][1],\
-                        sphere_vertices[i+1][0][2],sphere_normals[i+1][0][0],sphere_normals[i+1][0][1],\
-                        sphere_normals[i+1][0][2],*color]))
+        # triangle_list = []
+        # for i in range(slices):
+        #     for j in range(stacks):
+        #         i_1 = (i + 1) % (slices + 1)
+        #         j_1 = (j + 1) % (stacks + 1)
+        #         triangle_list.append(np.array([*sphere_vertices[i][j], *sphere_normals[i][j], *color]))
+        #         triangle_list.append(np.array([*sphere_vertices[i][j_1], *sphere_normals[i][j_1], *color]))
+        #         triangle_list.append(np.array([*sphere_vertices[i_1][j_1], *sphere_normals[i_1][j_1], *color]))
+        #
+        #         triangle_list.append(np.array([*sphere_vertices[i][j], *sphere_normals[i][j], *color]))
+        #         triangle_list.append(np.array([*sphere_vertices[i_1][j], *sphere_normals[i_1][j], *color]))
+        #         triangle_list.append(np.array([*sphere_vertices[i_1][j_1], *sphere_normals[i_1][j_1], *color]))
+        # new_vl = np.stack(triangle_list)
 
-                    triangle_list.append(np.array([sphere_vertices[i][j][0],sphere_vertices[i][j][1]\
-                        ,sphere_vertices[i][j][2],sphere_normals[i][j][0],sphere_normals[i][j][1]\
-                        ,sphere_normals[i][j][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[i+1][j][0],sphere_vertices[i+1][j][1],\
-                        sphere_vertices[i+1][j][2],sphere_normals[i+1][j][0],sphere_normals[i+1][j][1],\
-                        sphere_normals[i+1][j][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[i+1][0][0],sphere_vertices[i+1][0][1],\
-                        sphere_vertices[i+1][0][2],sphere_normals[i+1][0][0],sphere_normals[i+1][0][1],\
-                        sphere_normals[i+1][0][2],*color]))
-                elif (i==30 and j==30):
-                    triangle_list.append(np.array([sphere_vertices[i][j][0],sphere_vertices[i][j][1]\
-                        ,sphere_vertices[i][j][2], sphere_normals[i][j][0],sphere_normals[i][j][1]\
-                        ,sphere_normals[i][j][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[i][0][0],sphere_vertices[i][0][1],\
-                        sphere_vertices[i][0][2],sphere_normals[i][0][0],sphere_normals[i][0][1],\
-                        sphere_normals[i][0][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[0][0][0],sphere_vertices[0][0][1],\
-                        sphere_vertices[0][0][2],sphere_normals[0][0][0],sphere_normals[0][0][1],\
-                        sphere_normals[0][0][2],*color]))
+        self.vertices = np.zeros([len(sphere_vbo_data), 11])
+        self.vertices[0:len(sphere_vbo_data), 0:9] = sphere_vbo_data
 
-                    triangle_list.append(np.array([sphere_vertices[i][j][0],sphere_vertices[i][j][1]\
-                        ,sphere_vertices[i][j][2], sphere_normals[i][j][0],sphere_normals[i][j][1]\
-                        ,sphere_normals[i][j][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[0][j][0],sphere_vertices[0][j][1],\
-                        sphere_vertices[0][j][2],sphere_normals[0][j][0],sphere_normals[0][j][1],\
-                        sphere_normals[0][j][2],*color]))
-                    triangle_list.append(np.array([sphere_vertices[0][0][0],sphere_vertices[0][0][1],\
-                        sphere_vertices[0][0][2],sphere_normals[0][0][0],sphere_normals[0][0][1],\
-                        sphere_normals[0][0][2],*color]))
-
-        new_vl = np.stack(triangle_list)
-
-        
-        vl = np.array([
-            # back face
-            -radius/2, -radius/2, -radius/2, 0, 0, -1, *color,
-            -radius/2, radius/2, -radius/2, 0, 0, -1, *color,
-            radius/2, radius/2, -radius/2, 0, 0, -1, *color,            
-        ]).reshape((3, 9))
-
-        self.vertices = np.zeros([len(new_vl), 11])
-        self.vertices[0:len(new_vl), 0:9] = new_vl
-
-        self.indices = np.zeros(0)
+        self.indices = sphere_indices.flatten("C")
 
     def draw(self):
         self.vao.bind()
-        # TODO 1.1 is at here, switch from vbo to ebo
-        self.vbo.draw()
+        self.ebo.draw()
         self.vao.unbind()
 
     def initialize(self):
@@ -209,4 +144,3 @@ class DisplayableSphere(Displayable):
         # TODO/BONUS 6.1 is at here, you need to set attribPointer for texture coordinates
         # you should check the corresponding variable name in GLProgram and set the pointer
         self.vao.unbind()
-

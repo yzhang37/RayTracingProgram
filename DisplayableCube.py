@@ -69,61 +69,63 @@ class DisplayableCube(Displayable):
         self.height = height
         self.color = color
 
-        self.vertices = np.zeros([36, 11])
-        vl = np.array([
+        vertices_def = np.array([
             # back face
-            -length/2, -width/2, -height/2, 0, 0, -1, *color,
-            -length/2, width/2, -height/2, 0, 0, -1, *color,
-            length/2, width/2, -height/2, 0, 0, -1, *color,
-
-            
             -length / 2, -width / 2, -height / 2, 0, 0, -1, *color,
+            -length / 2, width / 2, -height / 2, 0, 0, -1, *color,
             length / 2, width / 2, -height / 2, 0, 0, -1, *color,
-            length/2, -width/2, -height/2, 0, 0, -1, *color,
+            length / 2, -width / 2, -height / 2, 0, 0, -1, *color,
             # front face
-            -length/2, -width/2, height/2, 0, 0, 1, *color,
-            length/2, -width/2, height/2, 0, 0, 1, *color,
-            length/2, width/2, height/2, 0, 0, 1, *color,
             -length / 2, -width / 2, height / 2, 0, 0, 1, *color,
+            length / 2, -width / 2, height / 2, 0, 0, 1, *color,
             length / 2, width / 2, height / 2, 0, 0, 1, *color,
-            -length/2, width/2, height/2, 0, 0, 1, *color,
+            -length / 2, width / 2, height / 2, 0, 0, 1, *color,
             # left face
-            -length/2, -width/2, -height/2, -1, 0, 0, *color,
-            -length/2, -width/2, height/2, -1, 0, 0, *color,
-            -length/2, width/2, height/2, -1, 0, 0, *color,
             -length / 2, -width / 2, -height / 2, -1, 0, 0, *color,
+            -length / 2, -width / 2, height / 2, -1, 0, 0, *color,
             -length / 2, width / 2, height / 2, -1, 0, 0, *color,
-            -length/2, width/2, -height/2, -1, 0, 0, *color,
+            -length / 2, width / 2, -height / 2, -1, 0, 0, *color,
             # right face
-            length/2, -width/2, height/2, 1, 0, 0, *color,
-            length/2, -width/2, -height/2, 1, 0, 0, *color,
-            length/2, width/2, -height/2, 1, 0, 0, *color,
             length / 2, -width / 2, height / 2, 1, 0, 0, *color,
+            length / 2, -width / 2, -height / 2, 1, 0, 0, *color,
             length / 2, width / 2, -height / 2, 1, 0, 0, *color,
-            length/2, width/2, height/2, 1, 0, 0, *color,
+            length / 2, width / 2, height / 2, 1, 0, 0, *color,
             # top face
-            -length/2, width/2, height/2, 0, 1, 0, *color,
-            length/2, width/2, height/2, 0, 1, 0, *color,
-            length/2, width/2, -height/2, 0, 1, 0, *color,
             -length / 2, width / 2, height / 2, 0, 1, 0, *color,
+            length / 2, width / 2, height / 2, 0, 1, 0, *color,
             length / 2, width / 2, -height / 2, 0, 1, 0, *color,
-            -length/2, width/2, -height/2, 0, 1, 0, *color,
+            -length / 2, width / 2, -height / 2, 0, 1, 0, *color,
             # bot face
-            -length/2, -width/2, -height/2, 0, -1, 0, *color,
-            length/2, -width/2, -height/2, 0, -1, 0, *color,
-            length/2, -width/2, height/2, 0, -1, 0, *color,
             -length / 2, -width / 2, -height / 2, 0, -1, 0, *color,
+            length / 2, -width / 2, -height / 2, 0, -1, 0, *color,
             length / 2, -width / 2, height / 2, 0, -1, 0, *color,
-            -length/2, -width/2, height/2, 0, -1, 0, *color,
-        ]).reshape((36, 9))
-        self.vertices[0:36, 0:9] = vl
+            -length / 2, -width / 2, height / 2, 0, -1, 0, *color,
+        ]).reshape((-1, 9))
 
-        self.indices = np.zeros(0)
+        indices_def = np.array([
+            # back face
+            0, 1, 2, 0, 2, 3,
+            # front face
+            4, 5, 6, 4, 6, 7,
+            # left face
+            8, 9, 10, 8, 10, 11,
+            # right face
+            12, 13, 14, 12, 14, 15,
+            # top face
+            16, 17, 18, 16, 18, 19,
+            # bot face
+            20, 21, 22, 20, 22, 23,
+        ])
+
+        defined_dim = vertices_def.shape
+        self.vertices = np.zeros((defined_dim[0], 11))
+        self.vertices[:, 0:9] = vertices_def
+
+        self.indices = np.array(indices_def)
 
     def draw(self):
         self.vao.bind()
-        # TODO 1.1 is at here, switch from vbo to ebo
-        self.vbo.draw()
+        self.ebo.draw()
         self.vao.unbind()
 
     def initialize(self):
