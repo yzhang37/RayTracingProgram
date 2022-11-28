@@ -59,7 +59,7 @@ class DisplayableSphere(Displayable):
         self.shaderProg.use()
 
         self.vao = VAO()
-        self.vbo = VBO()  # vbo can only be initiate with glProgram activated
+        self.vbo = VBO()  # vbo can only be initiated with glProgram activated
         self.ebo = EBO()
 
         self.generate(radius, color)
