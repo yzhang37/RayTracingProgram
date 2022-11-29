@@ -112,6 +112,8 @@ class DisplayableTorus(Displayable):
             return
 
         # we need to pad one more row for both nsides and rings, to assign correct texture coord to them
+        nsides += 1
+        rings += 1
         self.vertices = np.zeros((nsides * rings, 11))
         self.indices = np.zeros((nsides * rings, 6), dtype=np.uint32)
 
