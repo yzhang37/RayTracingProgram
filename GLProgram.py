@@ -204,15 +204,45 @@ void main()
     
     // Reserved for illumination rendering, routing name is "lighting" or "illumination"
     if ((renderingFlag >> 0 & 0x1) == 1){{
-        vec4 result = vec4(vColor, 1.0);
+        vec4 v4Color = vec4(vColor, 1.0);
+        vec4 result;
 
-        ////////// TODO 3: Illuminate your meshes
-        // Requirements:
-        //   Use the illumination equations we learned in the lecture to implement components for Diffuse, 
-        //   Specular, and Ambient. You’ll implement the missing part in the Fragment shader source code. 
-        //   This part will be implemented in OpenGL Shading Language. Your code should iterate through 
-        //   all lights in the Light array.
-
+        // Part 3: Illuminate your meshes
+        // first compute the ambient color
+        vec4 i_amb = {self.attribs["material"]}.ambient;
+        result = i_amb;
+        
+        // for each light, we compute diffuse and specular
+        for (int i = 0; i < MAX_LIGHT_NUM; i += 1){{
+            // first compute the diffuse
+            // L is the direction from the light to the vertex
+            vec3 L;
+            if (!{self.attribs["light"]}[i].infiniteOn){{
+                L = normalize({self.attribs["light"]}[i].position - vPos);
+            }} else {{
+                L = normalize({self.attribs["light"]}[i].infiniteDirection);
+            }}
+            vec3 N = normalize(vNormal);
+            float N_dot_L = dot(N, L);
+            if (N_dot_L <= 0.0)
+                continue;
+            vec4 i_diff = {self.attribs["material"]}.diffuse * N_dot_L;
+            result += i_diff * {self.attribs["light"]}[i].color;
+        
+            // then compute the specular
+            // V is the direction from the vertex to the camera
+            vec3 V = normalize({self.attribs["viewPosition"]} - vPos);
+            // R is the reflection of L about N
+            vec3 R = 2 * N_dot_L * N - L;
+    
+            float R_dot_V = max(dot(R, V), 0.0);
+            if (R_dot_V <= 0.0)
+                continue;
+            vec4 i_spec = {self.attribs["material"]}.specular * pow(R_dot_V, {self.attribs["material"]}.highlight);
+            result += i_spec * {self.attribs["light"]}[i].color;
+        }}
+        // avoid †he result is out of bounds
+        result = min(result, vec4(1.0));
         
         ////////// TODO 4: Set up lights
         // Requirements:
@@ -222,7 +252,7 @@ void main()
         //   * In the Sketch.py file Interrupt_keyboard method, bind keyboard interfaces that allows 
         //   the user to toggle on/off specular, diffuse, and ambient with keys S, D, A.
 
-        results[ri] = result;
+        results[ri] = result * v4Color;
         ri+=1;
     }}
     
@@ -287,6 +317,8 @@ void main()
     FragColor = outputResult;
 }}
         """
+        with open("sfile.shader", "w") as f:
+            f.write(fss)
         return fss
 
     def set_vss(self, vss: str):
