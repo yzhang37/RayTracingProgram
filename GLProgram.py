@@ -241,15 +241,15 @@ class GLProgram:
             // Reserved for normal rendering, routing name is "normal"
             if ((renderingFlag >> 3 & 0x1) == 1){{
             
-                ////////// TODO 2: Set Normal Rendering
+                ////////// Set Normal Rendering
                 // Requirements:
                 //   As a visual debugging mode, you’ll implement a rendering mode that visualizes the vertex normals 
                 //   with color information. In Fragment Shader, use the vertex normal as the vertex color 
                 //   (i.e. the rgb values come from the xyz components of the normal). The value for each dimension in 
                 //   vertex normal will be in the range -1 to 1. You will need to offset and rescale them to the 
                 //   range 0 to 1.
-                
-                results[ri] = vec4(0.5, 0.5, 0.5, 1.0);
+                vec3 offset_normal = vNormal * 0.5 + 0.5;
+                results[ri] = vec4(offset_normal, 1.0);
                 ri+=1;
             }}
             
