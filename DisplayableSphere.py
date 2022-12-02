@@ -96,11 +96,14 @@ class DisplayableSphere(Displayable):
                 sphere_vbo_data[i_by_j] = [x, y, z, x_normal, y_normal, z_normal, *color]
 
                 # I've combined the two loops here so that the number of loops can be reduced.
-                i_1 = (i + 1) % slices_1
-                j_1 = (j + 1) % stacks_1
+                ip1_by_j = (i + 1) % slices_1 * stacks_1 + j
+                i_by_jp1 = i * stacks_1 + (j + 1) % stacks_1
+                ip1_by_jp1 = (i + 1) % slices_1 * stacks_1 + (j + 1) % stacks_1
+
+                # readjust the order to match CCW.
                 sphere_indices[i_by_j] = [
-                    i_by_j, i * stacks_1 + j_1, i_1 * stacks_1 + j_1,
-                    i_by_j, i_1 * stacks_1 + j, i_1 * stacks_1 + j_1]
+                    i_by_j, ip1_by_j, i_by_jp1,
+                    ip1_by_jp1, ip1_by_j, i_by_jp1]
 
         # triangle_list = []
         # for i in range(slices):

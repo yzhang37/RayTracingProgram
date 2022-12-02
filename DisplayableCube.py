@@ -69,37 +69,42 @@ class DisplayableCube(Displayable):
         self.height = height
         self.color = color
 
+        hl = length / 2
+        hw = width / 2
+        hh = height / 2
+
+        # TODO: fix to match CCW definition.
         vertices_def = np.array([
             # back face
-            -length / 2, -width / 2, -height / 2, 0, 0, -1, *color,
-            -length / 2, width / 2, -height / 2, 0, 0, -1, *color,
-            length / 2, width / 2, -height / 2, 0, 0, -1, *color,
-            length / 2, -width / 2, -height / 2, 0, 0, -1, *color,
+            -hl, -hw, -hh, 0, 0, -1, *color,
+            -hl, hw, -hh, 0, 0, -1, *color,
+            hl, hw, -hh, 0, 0, -1, *color,
+            hl, -hw, -hh, 0, 0, -1, *color,
             # front face
-            -length / 2, -width / 2, height / 2, 0, 0, 1, *color,
-            length / 2, -width / 2, height / 2, 0, 0, 1, *color,
-            length / 2, width / 2, height / 2, 0, 0, 1, *color,
-            -length / 2, width / 2, height / 2, 0, 0, 1, *color,
+            -hl, -hw, hh, 0, 0, 1, *color,
+            hl, -hw, hh, 0, 0, 1, *color,
+            hl, hw, hh, 0, 0, 1, *color,
+            -hl, hw, hh, 0, 0, 1, *color,
             # left face
-            -length / 2, -width / 2, -height / 2, -1, 0, 0, *color,
-            -length / 2, -width / 2, height / 2, -1, 0, 0, *color,
-            -length / 2, width / 2, height / 2, -1, 0, 0, *color,
-            -length / 2, width / 2, -height / 2, -1, 0, 0, *color,
+            -hl, -hw, -hh, -1, 0, 0, *color,
+            -hl, -hw, hh, -1, 0, 0, *color,
+            -hl, hw, hh, -1, 0, 0, *color,
+            -hl, hw, -hh, -1, 0, 0, *color,
             # right face
-            length / 2, -width / 2, height / 2, 1, 0, 0, *color,
-            length / 2, -width / 2, -height / 2, 1, 0, 0, *color,
-            length / 2, width / 2, -height / 2, 1, 0, 0, *color,
-            length / 2, width / 2, height / 2, 1, 0, 0, *color,
+            hl, -hw, hh, 1, 0, 0, *color,
+            hl, -hw, -hh, 1, 0, 0, *color,
+            hl, hw, -hh, 1, 0, 0, *color,
+            hl, hw, hh, 1, 0, 0, *color,
             # top face
-            -length / 2, width / 2, height / 2, 0, 1, 0, *color,
-            length / 2, width / 2, height / 2, 0, 1, 0, *color,
-            length / 2, width / 2, -height / 2, 0, 1, 0, *color,
-            -length / 2, width / 2, -height / 2, 0, 1, 0, *color,
+            -hl, hw, hh, 0, 1, 0, *color,
+            hl, hw, hh, 0, 1, 0, *color,
+            hl, hw, -hh, 0, 1, 0, *color,
+            -hl, hw, -hh, 0, 1, 0, *color,
             # bot face
-            -length / 2, -width / 2, -height / 2, 0, -1, 0, *color,
-            length / 2, -width / 2, -height / 2, 0, -1, 0, *color,
-            length / 2, -width / 2, height / 2, 0, -1, 0, *color,
-            -length / 2, -width / 2, height / 2, 0, -1, 0, *color,
+            -hl, -hw, -hh, 0, -1, 0, *color,
+            hl, -hw, -hh, 0, -1, 0, *color,
+            hl, -hw, hh, 0, -1, 0, *color,
+            -hl, -hw, hh, 0, -1, 0, *color,
         ]).reshape((-1, 9))
 
         indices_def = np.array([

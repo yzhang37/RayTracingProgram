@@ -148,7 +148,11 @@ class DisplayableTorus(Displayable):
                 i_by_jp1 = i * rings + (j + 1) % rings
                 ip1_by_j = (i + 1) % nsides * rings + j
                 ip1_by_jp1 = (i + 1) % nsides * rings + (j + 1) % rings
-                self.indices[i_by_j, 0:6] = [i_by_j, i_by_jp1, ip1_by_jp1, i_by_j, ip1_by_j, ip1_by_jp1]
+
+                # readjust the order to match CCW.
+                self.indices[i_by_j, 0:6] = [
+                    i_by_j, ip1_by_j, i_by_jp1,
+                    ip1_by_jp1, ip1_by_j, i_by_jp1]
 
         self.indices = self.indices.flatten("C")
 
