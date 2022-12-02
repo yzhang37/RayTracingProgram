@@ -209,14 +209,15 @@ void main()
 
         // Part 3: Illuminate your meshes
         // first compute the ambient color
-        vec4 i_amb = {self.attribs["material"]}.ambient;
-        result = i_amb;
+        vec4 i_ambient = {self.attribs["material"]}.ambient;
+        result = i_ambient;
         
         // for each light, we compute diffuse and specular
         for (int i = 0; i < MAX_LIGHT_NUM; i += 1){{
-            // first compute the diffuse
+            //////////////// then compute the diffuse ////////////////
             // L is the direction from the light to the vertex
             vec3 L;
+            
             if (!{self.attribs["light"]}[i].infiniteOn){{
                 L = normalize({self.attribs["light"]}[i].position - vPos);
             }} else {{
@@ -224,23 +225,24 @@ void main()
             }}
             vec3 N = normalize(vNormal);
             float N_dot_L = dot(N, L);
-            if (N_dot_L <= 0.0)
-                continue;
-            vec4 i_diff = {self.attribs["material"]}.diffuse * N_dot_L;
-            result += i_diff * {self.attribs["light"]}[i].color;
+            vec4 i_diffuse = vec4(0.0);
+            if (N_dot_L > 0.0)
+                i_diffuse = ({self.attribs["material"]}.diffuse * N_dot_L) * {self.attribs["light"]}[i].color;
         
-            // then compute the specular
+            //////////////// then compute the specular ////////////////
             // V is the direction from the vertex to the camera
             vec3 V = normalize({self.attribs["viewPosition"]} - vPos);
-            // R is the reflection of L about N
-            // 2 * N_dot_L * N - L;
+            // R is the reflection of L about N, 2 * N_dot_L * N - L;
             vec3 R = reflect(-L, N);
     
             float R_dot_V = max(dot(R, V), 0.0);
-            if (R_dot_V <= 0.0)
-                continue;
-            vec4 i_spec = {self.attribs["material"]}.specular * pow(R_dot_V, {self.attribs["material"]}.highlight);
-            result += i_spec * {self.attribs["light"]}[i].color;
+            vec4 i_specular = vec4(0.0);
+            if (N_dot_L > 0.0 && R_dot_V > 0.0) {{
+                float specFact = pow(R_dot_V, {self.attribs["material"]}.highlight);
+                i_specular = {self.attribs["material"]}.specular * specFact * {self.attribs["light"]}[i].color;
+            }}
+            
+            result += (i_diffuse + i_specular);
         }}
         // avoid †he result is out of bounds
         result = min(result, vec4(1.0));
