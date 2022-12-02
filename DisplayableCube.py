@@ -73,7 +73,6 @@ class DisplayableCube(Displayable):
         hw = width / 2
         hh = height / 2
 
-        # TODO: fix to match CCW definition.
         vertices_def = np.array([
             # back face
             -hl, -hw, -hh, 0, 0, -1, *color,
