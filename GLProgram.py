@@ -233,7 +233,8 @@ void main()
             // V is the direction from the vertex to the camera
             vec3 V = normalize({self.attribs["viewPosition"]} - vPos);
             // R is the reflection of L about N
-            vec3 R = 2 * N_dot_L * N - L;
+            // 2 * N_dot_L * N - L;
+            vec3 R = reflect(-L, N);
     
             float R_dot_V = max(dot(R, V), 0.0);
             if (R_dot_V <= 0.0)
@@ -244,7 +245,7 @@ void main()
         // avoid †he result is out of bounds
         result = min(result, vec4(1.0));
         
-        ////////// TODO 4: Set up lights
+        // Set up lights
         // Requirements:
         //   * Use the Light struct which is defined above and the provided Light class to implement 
         //   illumination equations for 3 different light sources: Point light, Infinite light, 
