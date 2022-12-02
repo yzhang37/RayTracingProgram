@@ -48,12 +48,16 @@ class DisplayableSphere(Displayable):
     indices = None  # stores triangle indices to vertices
 
     # stores current cube's information, read-only
-    length = None
-    width = None
-    height = None
+    radius = None
+    slices = None
+    stacks = None
     color = None
 
-    def __init__(self, shaderProg, radius=1, color=ColorType.BLUE):
+    def __init__(self, shaderProg,
+                 radius=1,
+                 slices=30,
+                 stacks=30,
+                 color=ColorType.BLUE):
         super(DisplayableSphere, self).__init__()
         self.shaderProg = shaderProg
         self.shaderProg.use()
@@ -62,12 +66,17 @@ class DisplayableSphere(Displayable):
         self.vbo = VBO()  # vbo can only be initiated with glProgram activated
         self.ebo = EBO()
 
-        self.generate(radius, color)
+        self.generate(radius, slices, stacks, color)
 
-    def generate(self, radius=1, color=None, slices=30, stacks=30):
-        # self.length = length
-        # self.width = width
-        # self.height = height
+    def generate(self, radius, slices, stacks, color=None):
+        if slices < 3:
+            slices = 3
+        if stacks < 3:
+            stacks = 3
+
+        self.radius = radius
+        self.slices = slices
+        self.stacks = stacks
         self.color = color
         pi = math.pi
 

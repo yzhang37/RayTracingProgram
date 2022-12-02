@@ -21,7 +21,7 @@ from DisplayableCube import DisplayableCube
 from DisplayableTorus import DisplayableTorus
 from DisplayableSphere import DisplayableSphere
 
-##### TODO 1: Generate Triangle Meshes
+##### 1: Generate Triangle Meshes
 # Requirements:
 #   1. Use Element Buffer Object (EBO) to draw the cube. The cube provided in the start code is drawn with Vertex Buffer
 #   Object (VBO). In the DisplayableCube class draw method, you should switch from VBO draw to EBO draw. To achieve

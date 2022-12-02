@@ -2,7 +2,6 @@
 Define displayable Ellipsoid here.
 """
 
-
 from Displayable import Displayable
 from GLBuffer import VAO, VBO, EBO
 import numpy as np
@@ -44,13 +43,20 @@ class DisplayableEllipsoid(Displayable):
     vertices = None  # array to store vertices information
     indices = None  # stores triangle indices to vertices
 
-    # TODO: properties
-    length = None
-    width = None
-    height = None
+    radius_x = None
+    radius_y = None
+    radius_z = None
+    slices = None
+    stacks = None
     color = None
 
-    def __init__(self, shaderProg, radius=1, color=ColorType.BLUE):
+    def __init__(self, shaderProg,
+                 radius_x=1,
+                 radius_y=1,
+                 radius_z=1,
+                 slices=30,
+                 stacks=30,
+                 color=ColorType.ORANGE):
         super(DisplayableEllipsoid, self).__init__()
         self.shaderProg = shaderProg
         self.shaderProg.use()
@@ -59,11 +65,64 @@ class DisplayableEllipsoid(Displayable):
         self.vbo = VBO()  # vbo can only be initiated with glProgram activated
         self.ebo = EBO()
 
-        # TODO:
-        self.generate(radius, radius, color)
+        self.generate(radius_x, radius_y, radius_z, slices, stacks, color)
 
-    def generate(self, radius_a, radius_b, color=None):
-        pass
+    def generate(self,
+                 radius_x, radius_y, radius_z, slices, stacks,
+                 color=None):
+        # Ellipsoid parametric equation:
+        #   x = r_x * cos(u) * sin(v)
+        #   y = r_y * sin(u) * sin(v)
+        #   z = r_z * cos(v)
+        #   u uses slices, v uses stacks
+        # Normal vector:
+        #   n_x = cos(u) * sin(v) / r_x
+        #   n_y = sin(u) * sin(v) / r_y
+        #   n_z = cos(v) / r_z
+
+        self.radius_x = radius_x
+        self.radius_y = radius_y
+        self.radius_z = radius_z
+
+        if slices < 3:
+            slices = 3
+        if stacks < 3:
+            stacks = 3
+        self.slices = slices
+        self.stacks = stacks
+        self.color = color
+
+        pi = math.pi
+        slices += 1
+        stacks += 1
+
+        self.vertices = np.zeros((slices * stacks, 11))
+        self.indices = np.zeros((slices * stacks, 6), dtype=np.uint32)
+
+        for i, u in enumerate(np.linspace(-pi / 2, pi / 2, slices)):
+            for j, v in enumerate(np.linspace(-pi, pi, stacks)):
+                vx = np.cos(u) * np.sin(v)
+                vy = np.sin(u) * np.sin(v)
+                vz = np.cos(v)
+                x = radius_x * vx
+                y = radius_y * vy
+                z = radius_z * vz
+                nx = vx / radius_x
+                ny = vy / radius_y
+                nz = vz / radius_z
+
+                i_by_j = i * stacks + j
+                ip1_by_j = (i + 1) % slices * stacks + j
+                i_by_jp1 = i * stacks + (j + 1) % stacks
+                ip1_by_jp1 = (i + 1) % slices * stacks + (j + 1) % stacks
+
+                self.vertices[i_by_j, 0:9] = [x, y, z, nx, ny, nz, *color]
+                # self.vertices[i * stacks + j, 9:11] = [i / slices, j / stacks]
+                self.indices[i_by_j] = [
+                    i_by_j, ip1_by_j, i_by_jp1,
+                    ip1_by_jp1, ip1_by_j, i_by_jp1]
+
+        self.indices = self.indices.flatten("C")
 
     def draw(self):
         self.vao.bind()
