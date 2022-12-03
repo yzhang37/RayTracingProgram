@@ -223,6 +223,7 @@ void main()
             }} else {{
                 L = normalize({self.attribs["light"]}[i].infiniteDirection);
             }}
+            
             vec3 N = normalize(vNormal);
             float N_dot_L = dot(N, L);
             vec4 i_diffuse = vec4(0.0);
@@ -242,7 +243,20 @@ void main()
                 i_specular = {self.attribs["material"]}.specular * specFact * {self.attribs["light"]}[i].color;
             }}
             
-            result += (i_diffuse + i_specular);
+            float f_radial = 1.0, f_angular = 1.0;
+            if ({self.attribs["light"]}[i].spotOn){{
+                // TODO: 这里其实有一个问题，就是针对每一个灯的数据，这里是不需要为了每个点重复计算的
+                // 应该想一个办法预存。
+                float dist = length({self.attribs["light"]}[i].position - vPos);
+                float a = {self.attribs["light"]}[i].spotRadialFactor[0];
+                float b = {self.attribs["light"]}[i].spotRadialFactor[1];
+                float c = {self.attribs["light"]}[i].spotRadialFactor[2];
+                f_radial = 1.0 / (a + b * dist + c * dist * dist);
+                
+                
+            }}
+            
+            result += f_radial * f_angular * (i_diffuse + i_specular);
         }}
         // avoid †he result is out of bounds
         result = min(result, vec4(1.0));
