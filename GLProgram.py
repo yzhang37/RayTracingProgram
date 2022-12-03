@@ -93,6 +93,7 @@ class GLProgram:
             self.attribs[f"light[{i}].spotOn"] = f"{self.attribs['light']}[{i}].spotOn"
             self.attribs[f"light[{i}].spotDirection"] = f"{self.attribs['light']}[{i}].spotDirection"
             self.attribs[f"light[{i}].spotAngleLimit"] = f"{self.attribs['light']}[{i}].spotAngleLimit"
+            self.attribs[f"light[{i}].spotExpAttenuation"] = f"{self.attribs['light']}[{i}].spotExpAttenuation"
 
         self.vertexShaderSource = self.genVertexShaderSource()
         self.fragmentShaderSource = self.genFragShaderSource()
@@ -167,6 +168,7 @@ struct Light{{
     vec3 spotDirection;
     vec3 spotRadialFactor;
     float spotAngleLimit;
+    float spotExpAttenuation;
 }};
 
 in vec3 vPos;
@@ -243,17 +245,24 @@ void main()
                 i_specular = {self.attribs["material"]}.specular * specFact * {self.attribs["light"]}[i].color;
             }}
             
-            float f_radial = 1.0, f_angular = 1.0;
-            if ({self.attribs["light"]}[i].spotOn){{
-                // TODO: 这里其实有一个问题，就是针对每一个灯的数据，这里是不需要为了每个点重复计算的
-                // 应该想一个办法预存。
+            float f_radial = 1.0;
+            if ({self.attribs["light"]}[i].spotOn && !{self.attribs["light"]}[i].infiniteOn){{
                 float dist = length({self.attribs["light"]}[i].position - vPos);
                 float a = {self.attribs["light"]}[i].spotRadialFactor[0];
                 float b = {self.attribs["light"]}[i].spotRadialFactor[1];
                 float c = {self.attribs["light"]}[i].spotRadialFactor[2];
                 f_radial = 1.0 / (a + b * dist + c * dist * dist);
-                
-                
+            }}
+            float f_angular = 1.0;
+            if ({self.attribs["light"]}[i].spotOn){{
+                // unlikely L, vObj3 should always be vector from position to render point.
+                vec3 vObj = normalize({self.attribs["light"]}[i].position - vPos);
+                float cos_angle = dot(vObj, normalize({self.attribs["light"]}[i].spotDirection));
+                if (cos_angle > {self.attribs["light"]}[i].spotAngleLimit) {{
+                    f_angular = pow(cos_angle, {self.attribs["light"]}[i].spotExpAttenuation);
+                }} else {{
+                    f_angular = 0.0;
+                }}
             }}
             
             result += f_radial * f_angular * (i_diffuse + i_specular);
