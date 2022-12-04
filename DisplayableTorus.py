@@ -12,6 +12,7 @@ from Point import Point
 import numpy as np
 import ColorType
 import math
+
 try:
     import OpenGL
 
@@ -37,7 +38,8 @@ try:
 except ImportError:
     raise ImportError("Required dependency PyOpenGL not present")
 
-##### TODO 6/BONUS 6: Texture Mapping
+
+##### 6: Texture Mapping
 # Requirements:
 #   1. Set up each object's vertex texture coordinates(2D) to the self.vertices 9:11 columns
 #   (i.e. the last two columns). Tell OpenGL how to interpret these two columns:
