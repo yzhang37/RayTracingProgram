@@ -246,10 +246,13 @@ void main()
                 L = normalize({_light}[i].infiniteDirection);
             }}
             
+            if (!{_dOn} && !{_sOn})
+                continue;
+            
+            vec4 i_diffuse = vec4(0.0);
             vec3 N = normalize(vNormal);
             float N_dot_L = dot(N, L);
-            vec4 i_diffuse = vec4(0.0);
-            if (N_dot_L > 0.0)
+            if ({_dOn} && N_dot_L > 0.0)
                 i_diffuse = ({_material}.diffuse * N_dot_L) * {_light}[i].color;
         
             //////////////// then compute the specular ////////////////
@@ -260,7 +263,7 @@ void main()
     
             float R_dot_V = max(dot(R, V), 0.0);
             vec4 i_specular = vec4(0.0);
-            if (N_dot_L > 0.0 && R_dot_V > 0.0) {{
+            if ({_sOn} && N_dot_L > 0.0 && R_dot_V > 0.0) {{
                 float specFact = pow(R_dot_V, {_material}.highlight);
                 i_specular = {_material}.specular * specFact * {_light}[i].color;
             }}
