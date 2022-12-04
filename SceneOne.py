@@ -45,13 +45,14 @@ class SceneOne(Scene, Animation):
         self.lAngles = [0, 0, 0]
 
         sphere = Component(Point((-1, 0, 0)), DisplayableSphere(shaderProg, 1.0))
-        m1 = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.2, 0.2, 0.2, 1)),
-                      np.array((0.4, 0.4, 0.4, 0.1)), 64)
+        m1 = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.5, 0.5, 0.5, 1)),
+                      np.array((0.8, 0.8, 0.8, 0.1)), 16)
         sphere.setDefaultAngle(-90, sphere.uAxis)
         sphere.setDefaultAngle(180, sphere.wAxis)
         sphere.setMaterial(m1)
         sphere.setTexture(self.shaderProg, 'assets/earth.jpg')
         sphere.renderingRouting = "lighting_texture"
+
         self.addChild(sphere)
 
         torus = Component(Point((1, 0, 0)), DisplayableTorus(shaderProg, 0.25, 0.5, 36, 36))
