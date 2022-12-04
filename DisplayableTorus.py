@@ -176,5 +176,6 @@ class DisplayableTorus(Displayable):
                                   stride=11, offset=3, attribSize=3)
         self.vbo.setAttribPointer(self.shaderProg.getAttribLocation("vertexColor"),
                                   stride=11, offset=6, attribSize=3)
-
+        self.vbo.setAttribPointer(self.shaderProg.getAttribLocation("vertexTexture"),
+                                  stride=11, offset=9, attribSize=2)
         self.vao.unbind()
