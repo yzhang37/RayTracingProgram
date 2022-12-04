@@ -77,7 +77,11 @@ class GLProgram:
             "light": "light",
 
             "maxLightsNum": "20",
-            "maxMaterialNum": "20"
+            "maxMaterialNum": "20",
+
+            "ambientOn": "l_ambientOn",
+            "diffuseOn": "l_diffuseOn",
+            "specularOn": "l_specularOn",
         }
         self.attribs["diffuse"] = self.attribs["material"] + ".diffuse"
         self.attribs["specular"] = self.attribs["material"] + ".specular"
@@ -146,6 +150,15 @@ class GLProgram:
         return vss
 
     def genFragShaderSource(self):
+        # macros
+        _light = self.attribs["light"]
+        _material = self.attribs["material"]
+        _viewPosition = self.attribs["viewPosition"]
+        _txtrImg = self.attribs["textureImage"]
+        _aOn = self.attribs["ambientOn"]
+        _dOn = self.attribs["diffuseOn"]
+        _sOn = self.attribs["specularOn"]
+
         fss = f"""
 #version 330 core
 #define MAX_LIGHT_NUM {self.attribs["maxLightsNum"]}
@@ -177,11 +190,15 @@ smooth in vec3 vNormal;
 in vec2 vTexture;
 
 uniform int renderingFlag;
-uniform sampler2D {self.attribs["textureImage"]};
+uniform sampler2D {_txtrImg};
 
-uniform vec3 {self.attribs["viewPosition"]};
-uniform Material {self.attribs["material"]};
-uniform Light {self.attribs["light"]}[MAX_LIGHT_NUM];
+uniform vec3 {_viewPosition};
+uniform Material {_material};
+uniform Light {_light}[MAX_LIGHT_NUM];
+// switch for ambient, diffuse and specular on/off
+uniform bool {_aOn};
+uniform bool {_dOn};
+uniform bool {_sOn};
 
 out vec4 FragColor;
 void main()
@@ -207,12 +224,15 @@ void main()
     // Reserved for illumination rendering, routing name is "lighting" or "illumination"
     if ((renderingFlag >> 0 & 0x1) == 1){{
         vec4 v4Color = vec4(vColor, 1.0);
-        vec4 result;
+        vec4 iSum = vec4(0.0);
 
         // Part 3: Illuminate your meshes
         // first compute the ambient color
-        vec4 i_ambient = {self.attribs["material"]}.ambient;
-        result = i_ambient;
+        if ({_aOn}){{
+            results[ri] = {_material}.ambient * v4Color;
+        }} else {{
+            results[ri] = v4Color;
+        }}
         
         // for each light, we compute diffuse and specular
         for (int i = 0; i < MAX_LIGHT_NUM; i += 1){{
@@ -220,55 +240,55 @@ void main()
             // L is the direction from the light to the vertex
             vec3 L;
             
-            if (!{self.attribs["light"]}[i].infiniteOn){{
-                L = normalize({self.attribs["light"]}[i].position - vPos);
+            if (!{_light}[i].infiniteOn){{
+                L = normalize({_light}[i].position - vPos);
             }} else {{
-                L = normalize({self.attribs["light"]}[i].infiniteDirection);
+                L = normalize({_light}[i].infiniteDirection);
             }}
             
             vec3 N = normalize(vNormal);
             float N_dot_L = dot(N, L);
             vec4 i_diffuse = vec4(0.0);
             if (N_dot_L > 0.0)
-                i_diffuse = ({self.attribs["material"]}.diffuse * N_dot_L) * {self.attribs["light"]}[i].color;
+                i_diffuse = ({_material}.diffuse * N_dot_L) * {_light}[i].color;
         
             //////////////// then compute the specular ////////////////
             // V is the direction from the vertex to the camera
-            vec3 V = normalize({self.attribs["viewPosition"]} - vPos);
+            vec3 V = normalize({_viewPosition} - vPos);
             // R is the reflection of L about N, 2 * N_dot_L * N - L;
             vec3 R = reflect(-L, N);
     
             float R_dot_V = max(dot(R, V), 0.0);
             vec4 i_specular = vec4(0.0);
             if (N_dot_L > 0.0 && R_dot_V > 0.0) {{
-                float specFact = pow(R_dot_V, {self.attribs["material"]}.highlight);
-                i_specular = {self.attribs["material"]}.specular * specFact * {self.attribs["light"]}[i].color;
+                float specFact = pow(R_dot_V, {_material}.highlight);
+                i_specular = {_material}.specular * specFact * {_light}[i].color;
             }}
             
             float f_radial = 1.0;
-            if ({self.attribs["light"]}[i].spotOn && !{self.attribs["light"]}[i].infiniteOn){{
-                float dist = length({self.attribs["light"]}[i].position - vPos);
-                float a = {self.attribs["light"]}[i].spotRadialFactor[0];
-                float b = {self.attribs["light"]}[i].spotRadialFactor[1];
-                float c = {self.attribs["light"]}[i].spotRadialFactor[2];
+            if ({_light}[i].spotOn && !{_light}[i].infiniteOn){{
+                float dist = length({_light}[i].position - vPos);
+                float a = {_light}[i].spotRadialFactor[0];
+                float b = {_light}[i].spotRadialFactor[1];
+                float c = {_light}[i].spotRadialFactor[2];
                 f_radial = 1.0 / (a + b * dist + c * dist * dist);
             }}
             float f_angular = 1.0;
-            if ({self.attribs["light"]}[i].spotOn){{
+            if ({_light}[i].spotOn){{
                 // unlikely L, vObj3 should always be vector from position to render point.
-                vec3 vObj = normalize({self.attribs["light"]}[i].position - vPos);
-                float cos_angle = dot(vObj, normalize({self.attribs["light"]}[i].spotDirection));
-                if (cos_angle > {self.attribs["light"]}[i].spotAngleLimit) {{
-                    f_angular = pow(cos_angle, {self.attribs["light"]}[i].spotExpAttenuation);
+                vec3 vObj = normalize({_light}[i].position - vPos);
+                float cos_angle = dot(vObj, normalize({_light}[i].spotDirection));
+                if (cos_angle > {_light}[i].spotAngleLimit) {{
+                    f_angular = pow(cos_angle, {_light}[i].spotExpAttenuation);
                 }} else {{
                     f_angular = 0.0;
                 }}
             }}
             
-            result += f_radial * f_angular * (i_diffuse + i_specular);
+            iSum += f_radial * f_angular * (i_diffuse + i_specular);
         }}
-        // avoid †he result is out of bounds
-        result = min(result, vec4(1.0));
+        // avoid the result is out of bounds
+        iSum = min(iSum, vec4(1.0));
         
         // Set up lights
         // Requirements:
@@ -278,7 +298,8 @@ void main()
         //   * In the Sketch.py file Interrupt_keyboard method, bind keyboard interfaces that allows 
         //   the user to toggle on/off specular, diffuse, and ambient with keys S, D, A.
 
-        results[ri] = result * v4Color;
+        results[ri] += iSum * v4Color;
+        results[ri] = min(results[ri], vec4(1.0));
         ri+=1;
     }}
     
@@ -331,7 +352,7 @@ void main()
     // Reserved for texture mapping, get point color from texture image and texture coordinates
     // Routing name is "texture"
     if ((renderingFlag >> 8 & 0x1) == 1){{
-        results[ri] = texture({self.attribs["textureImage"]}, vTexture);
+        results[ri] = texture({_txtrImg}, vTexture);
         ri+=1;
     }}
     

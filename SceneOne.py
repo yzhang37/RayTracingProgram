@@ -11,6 +11,7 @@ import numpy as np
 
 import ColorType
 from Animation import Animation
+from SceneType import Scene
 from Component import Component
 from Light import Light
 from Material import Material
@@ -23,9 +24,7 @@ from DisplayableTorus import DisplayableTorus
 from DisplayableCylinder import DisplayableCylinder
 
 
-class SceneOne(Component, Animation):
-    lights = None
-    lightCubes = None
+class SceneOne(Scene, Animation):
     shaderProg = None
     glutility = None
 
@@ -34,7 +33,7 @@ class SceneOne(Component, Animation):
     lTransformations = None
 
     def __init__(self, shaderProg):
-        super().__init__(Point((0, 0, 0)))
+        super().__init__()
         self.shaderProg = shaderProg
         self.glutility = GLUtility.GLUtility()
 
