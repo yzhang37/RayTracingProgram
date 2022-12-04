@@ -43,12 +43,12 @@ class SceneOne(Scene, Animation):
         self.lRadius = 3
         self.lAngles = [0, 0, 0]
 
-        cube = Component(Point((-1, 0, 0)), DisplayableSphere(shaderProg, 1.0))
+        sphere = Component(Point((-1, 0, 0)), DisplayableSphere(shaderProg, 1.0))
         m1 = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.2, 0.2, 0.2, 1)),
                       np.array((0.4, 0.4, 0.4, 0.1)), 64)
-        cube.setMaterial(m1)
-        cube.renderingRouting = "lighting"
-        self.addChild(cube)
+        sphere.setMaterial(m1)
+        sphere.renderingRouting = "lighting"
+        self.addChild(sphere)
 
         torus = Component(Point((1, 0, 0)), DisplayableTorus(shaderProg, 0.25, 0.5, 36, 36))
         m2 = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.2, 0.2, 0.2, 1)),
