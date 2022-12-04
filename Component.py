@@ -82,6 +82,8 @@ class Component:
 
     texture = None
     textureOn = False
+    normalMap = None
+    normalMapOn = False
     material = None
     renderingRouting = None
 
@@ -126,6 +128,7 @@ class Component:
         self.postRotationMat = np.identity(4)
         self.material = Material()
         self.texture = Texture()
+        self.normalMap = Texture()
 
     def addChild(self, child):
         """
@@ -181,6 +184,12 @@ class Component:
             else:
                 shaderProg.use()
                 self.texture.unbind(shaderProg.getUniformLocation("textureImage"))
+            if self.normalMapOn:
+                shaderProg.use()
+                self.normalMap.bind(shaderProg.getUniformLocation("normalMap"))
+            else:
+                shaderProg.use()
+                self.normalMap.unbind(shaderProg.getUniformLocation("normalMap"))
             self.displayObj.draw()
 
         for c in self.children:
@@ -306,6 +315,17 @@ class Component:
         texture_image = np.array(texture_image, dtype=np.uint8)
         self.texture.setTextureImage(texture_image)
         self.textureOn = textureOn
+
+    def setNormalMap(self, shaderProg, imgFilePath, normalMapOn=True):
+        # apply normal map
+        if not os.path.isfile(imgFilePath):
+            raise TypeError("Image File doesn't exist")
+
+        shaderProg.use()
+        normalMap = Image.open(imgFilePath).convert("RGB")
+        normalMap = np.array(normalMap, dtype=np.uint8)
+        self.normalMap.setTextureImage(normalMap)
+        self.normalMapOn = normalMapOn
 
     def setMaterial(self, material: Material):
         if not isinstance(material, Material):

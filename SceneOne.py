@@ -52,7 +52,7 @@ class SceneOne(Scene, Animation):
         sphere.setMaterial(m1)
         sphere.setTexture(self.shaderProg, 'assets/earth.jpg')
         sphere.renderingRouting = "lighting_texture"
-
+        sphere.setNormalMap(self.shaderProg, 'assets/earth_normal.png')
         self.addChild(sphere)
 
         torus = Component(Point((1, 0, 0)), DisplayableTorus(shaderProg, 0.25, 0.5, 36, 36))
