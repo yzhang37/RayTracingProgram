@@ -112,14 +112,14 @@ class DisplayableTorus(Displayable):
             return
 
         # we need to pad one more row for both nsides and rings, to assign correct texture coord to them
-        nsides += 1
-        rings += 1
-        self.vertices = np.zeros((nsides * rings, 11))
-        self.indices = np.zeros((nsides * rings, 6), dtype=np.uint32)
+        nsides_1 = nsides + 1
+        rings_1 = rings + 1
+        self.vertices = np.zeros((nsides_1 * rings_1, 11))
+        self.indices = np.zeros((nsides_1 * rings_1, 6), dtype=np.uint32)
 
         pi = np.pi
-        for i, u in enumerate(np.linspace(-pi, pi, nsides)):
-            for j, v in enumerate(np.linspace(-pi, pi, rings)):
+        for i, u in enumerate(np.linspace(-pi, pi, nsides_1)):
+            for j, v in enumerate(np.linspace(-pi, pi, rings_1)):
                 # pre_compute
                 cos_u = np.cos(u)
                 sin_u = np.sin(u)
@@ -132,7 +132,7 @@ class DisplayableTorus(Displayable):
                 x = comm_patt * cos_u
                 y = comm_patt * sin_u
                 z = b * sin_v
-                i_by_j = i * rings + j
+                i_by_j = i * rings_1 + j
 
                 # compute the vertex normal
                 nx = np.sign(b) * cos_u * cos_v * np.sign(comm_patt)
@@ -140,14 +140,14 @@ class DisplayableTorus(Displayable):
                 nz = np.sign(b) * sin_v * np.sign(comm_patt)
 
                 # compute the vertex color
-                self.vertices[i_by_j, 0:9] = [x, y, z, nx, ny, nz, *color]
+                self.vertices[i_by_j] = [x, y, z, nx, ny, nz, *color, i / nsides, j / rings]
 
                 # # compute the vertex texture coordinates
                 # self.vertices[vert_index, 9:11] = [u / (2 * pi), v / (2 * pi)]
 
-                i_by_jp1 = i * rings + (j + 1) % rings
-                ip1_by_j = (i + 1) % nsides * rings + j
-                ip1_by_jp1 = (i + 1) % nsides * rings + (j + 1) % rings
+                i_by_jp1 = i * rings_1 + (j + 1) % rings_1
+                ip1_by_j = (i + 1) % nsides_1 * rings_1 + j
+                ip1_by_jp1 = (i + 1) % nsides_1 * rings_1 + (j + 1) % rings_1
 
                 # readjust the order to match CCW.
                 self.indices[i_by_j, 0:6] = [

@@ -58,8 +58,9 @@ class SceneOne(Scene, Animation):
         m2 = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.2, 0.2, 0.2, 1)),
                       np.array((0, 0, 0, 1.0)), 64)
         torus.setMaterial(m2)
-        torus.renderingRouting = "lighting"
+        torus.renderingRouting = "texture"
         torus.rotate(90, torus.uAxis)
+        torus.setTexture(self.shaderProg, 'assets/marble.jpg')
         self.addChild(torus)
 
         cylinder = Component(Point((1, 0, -2)), DisplayableCylinder(shaderProg, 0.3, 0.7, 1, 36))
