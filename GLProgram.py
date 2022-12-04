@@ -220,10 +220,16 @@ void main()
     //   color, the image is used to modify the normals.
     //   2. Use the input normal map (“./assets/normalmap.jpg”) on both the sphere and the torus.
 
-    
+    bool useLighting = (renderingFlag >> 0 & 0x1) == 1;
+    bool useTexture = (renderingFlag >> 8 & 0x1) == 1;
     // Reserved for illumination rendering, routing name is "lighting" or "illumination"
-    if ((renderingFlag >> 0 & 0x1) == 1){{
-        vec4 v4Color = vec4(vColor, 1.0);
+    if (useLighting) {{
+        vec4 v4Color;
+        if (!useTexture) {{
+            v4Color = vec4(vColor, 1.0);
+        }} else {{
+            v4Color = texture({_txtrImg}, vTexture);
+        }}
         vec4 iSum = vec4(0.0);
 
         // Part 3: Illuminate your meshes
@@ -354,7 +360,7 @@ void main()
     
     // Reserved for texture mapping, get point color from texture image and texture coordinates
     // Routing name is "texture"
-    if ((renderingFlag >> 8 & 0x1) == 1){{
+    if (useTexture && !useLighting){{
         results[ri] = texture({_txtrImg}, vTexture);
         ri+=1;
     }}

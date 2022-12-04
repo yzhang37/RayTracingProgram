@@ -51,14 +51,14 @@ class SceneOne(Scene, Animation):
         sphere.setDefaultAngle(180, sphere.wAxis)
         sphere.setMaterial(m1)
         sphere.setTexture(self.shaderProg, 'assets/earth.jpg')
-        sphere.renderingRouting = "texture"
+        sphere.renderingRouting = "lighting_texture"
         self.addChild(sphere)
 
         torus = Component(Point((1, 0, 0)), DisplayableTorus(shaderProg, 0.25, 0.5, 36, 36))
         m2 = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.2, 0.2, 0.2, 1)),
                       np.array((0, 0, 0, 1.0)), 64)
         torus.setMaterial(m2)
-        torus.renderingRouting = "texture"
+        torus.renderingRouting = "lighting_texture"
         torus.rotate(90, torus.uAxis)
         torus.setTexture(self.shaderProg, 'assets/marble.jpg')
         self.addChild(torus)
