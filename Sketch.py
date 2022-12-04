@@ -13,6 +13,7 @@ import numpy as np
 
 import ColorType
 from Animation import Animation
+from SceneType import Scene
 from ModelAxes import ModelAxes
 from Point import Point
 from CanvasBase import CanvasBase
@@ -112,7 +113,12 @@ class Sketch(CanvasBase):
 
     # models
     basisAxes = None
-    scene = None
+    scene: Scene = None
+
+    # switch of ambient, diffuse and specular light
+    ambientOn: bool = True
+    diffuseOn: bool = True
+    specularOn: bool = True
 
     def __init__(self, parent):
         """
@@ -172,6 +178,8 @@ class Sketch(CanvasBase):
         self.shaderProg.setMat4("modelMat", np.identity(4))
 
         self.shaderProg.setVec3("viewPosition", np.array(self.getCameraPos()))
+
+        self.updateLight(False)
 
     def getCameraPos(self):
         ct = math.cos(self.cameraTheta)
@@ -353,6 +361,17 @@ class Sketch(CanvasBase):
         """
         self.topLevelComponent.update(np.identity(4))
 
+    def updateLight(self, update: bool = True):
+        """
+        Update light properties
+        :return: None
+        """
+        self.shaderProg.setBool('specularOn', self.specularOn)
+        self.shaderProg.setBool('diffuseOn', self.diffuseOn)
+        self.shaderProg.setBool('ambientOn', self.ambientOn)
+        if update:
+            self.update()
+
     def Interrupt_Keyboard(self, keycode):
         """
         Keyboard interrupt bindings
@@ -363,23 +382,31 @@ class Sketch(CanvasBase):
 
         if keycode in [wx.WXK_RETURN]:
             self.update()
-        if keycode in [wx.WXK_LEFT]:
+        elif keycode in [wx.WXK_LEFT]:
             self.update()
-        if keycode in [wx.WXK_RIGHT]:
+        elif keycode in [wx.WXK_RIGHT]:
             self.update()
-        if keycode in [wx.WXK_UP]:
+        elif keycode in [wx.WXK_UP]:
             self.Interrupt_Scroll(1)
             self.update()
-        if keycode in [wx.WXK_DOWN]:
+        elif keycode in [wx.WXK_DOWN]:
             self.Interrupt_Scroll(-1)
             self.update()
-        if chr(keycode) in "rR":
+        elif chr(keycode) in "rR":
             # reset viewing angle only
             self.resetView()
-        if chr(keycode) in "pP":
+        elif chr(keycode) in "pP":
             self.pauseScene = not self.pauseScene
+        elif chr(keycode) in "sS":
+            self.specularOn = not self.specularOn
+            self.updateLight()
+        elif chr(keycode) in "dD":
+            self.diffuseOn = not self.diffuseOn
+            self.updateLight()
+        elif chr(keycode) in "aA":
+            self.ambientOn = not self.ambientOn
+            self.updateLight()
 
-        # TODO 4.2 is at here
         # TODO 5.3 is at here
 
 

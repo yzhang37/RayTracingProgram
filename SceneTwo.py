@@ -11,6 +11,7 @@ import numpy as np
 
 import ColorType
 from Animation import Animation
+from SceneType import Scene
 from Component import Component
 from Light import Light
 from Material import Material
@@ -55,15 +56,12 @@ from DisplayableSphere import DisplayableSphere
 #   Hit 1, 2, 3, 4, etc. to identify which light to toggle.
 
 
-class SceneTwo(Component):
+class SceneTwo(Scene):
     shaderProg = None
     glutility = None
 
-    lights = None
-    lightCubes = None
-
     def __init__(self, shaderProg):
-        super().__init__(Point((0, 0, 0)))
+        super().__init__()
         self.shaderProg = shaderProg
         self.glutility = GLUtility.GLUtility()
 
