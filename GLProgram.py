@@ -227,6 +227,14 @@ void main()
         vec4 iSum = vec4(0.0);
 
         // Part 3: Illuminate your meshes
+        // Part 4: Set up lights
+        // Requirements:
+        //   * Use the Light struct which is defined above and the provided Light class to implement 
+        //   illumination equations for 3 different light sources: Point light, Infinite light, 
+        //   Spotlight with radial and angular attenuation
+        //   * In the Sketch.py file Interrupt_keyboard method, bind keyboard interfaces that allows 
+        //   the user to toggle on/off specular, diffuse, and ambient with keys S, D, A.
+        
         // first compute the ambient color
         if ({_aOn}){{
             results[ri] = {_material}.ambient * v4Color;
@@ -292,14 +300,6 @@ void main()
         }}
         // avoid the result is out of bounds
         iSum = min(iSum, vec4(1.0));
-        
-        // Set up lights
-        // Requirements:
-        //   * Use the Light struct which is defined above and the provided Light class to implement 
-        //   illumination equations for 3 different light sources: Point light, Infinite light, 
-        //   Spotlight with radial and angular attenuation
-        //   * In the Sketch.py file Interrupt_keyboard method, bind keyboard interfaces that allows 
-        //   the user to toggle on/off specular, diffuse, and ambient with keys S, D, A.
 
         results[ri] += iSum * v4Color;
         results[ri] = min(results[ri], vec4(1.0));
