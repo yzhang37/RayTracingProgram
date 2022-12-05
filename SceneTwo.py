@@ -182,7 +182,7 @@ class SceneTwo(Scene):
         flash2_light = Light(fl2_pos, np.array((*ColorType.WHITE, 1.0)), None,
                              spotDirection=fl2_direct, **flashlight_settings)
 
-        self.lights = [flash1_light, flash2_light]
+        self.lights = [l0, flash1_light, flash2_light]
         self.lightCubes = [lightCube0, flash1_obj, flash2_obj]
 
     def initialize(self):
