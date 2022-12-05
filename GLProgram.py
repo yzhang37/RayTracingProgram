@@ -95,9 +95,9 @@ class GLProgram:
             self.attribs[f"light[{i}].infiniteOn"] = f"{self.attribs['light']}[{i}].infiniteOn"
             self.attribs[f"light[{i}].infiniteDirection"] = f"{self.attribs['light']}[{i}].infiniteDirection"
             self.attribs[f"light[{i}].radialOn"] = f"{self.attribs['light']}[{i}].radialOn"
-            self.attribs[f"light[{i}].radialFactor"] = f"{self.attribs['light']}[{i}].radialFactor"
             self.attribs[f"light[{i}].spotOn"] = f"{self.attribs['light']}[{i}].spotOn"
             self.attribs[f"light[{i}].spotDirection"] = f"{self.attribs['light']}[{i}].spotDirection"
+            self.attribs[f"light[{i}].spotRadialFactor"] = f"{self.attribs['light']}[{i}].spotRadialFactor"
             self.attribs[f"light[{i}].spotAngleLimit"] = f"{self.attribs['light']}[{i}].spotAngleLimit"
             self.attribs[f"light[{i}].spotExpAttenuation"] = f"{self.attribs['light']}[{i}].spotExpAttenuation"
 
@@ -502,6 +502,13 @@ void main()
 
         self.setVec3(f"""{self.attribs["light"]}[{lightIndex}].position""", light.position, False)
         self.setVec4(f"""{self.attribs["light"]}[{lightIndex}].color""", light.color, False)
+        self.setBool(f"""{self.attribs["light"]}[{lightIndex}].infiniteOn""", light.infiniteOn, False)
+        self.setVec3(f"""{self.attribs["light"]}[{lightIndex}].infiniteDirection""", light.position, False)
+        self.setBool(f"""{self.attribs["light"]}[{lightIndex}].spotOn""", light.spotOn, False)
+        self.setVec3(f"""{self.attribs["light"]}[{lightIndex}].spotDirection""", light.spotDirection, False)
+        self.setVec3(f"""{self.attribs["light"]}[{lightIndex}].spotRadialFactor""", light.spotRadialFactor, False)
+        self.setFloat(f"""{self.attribs["light"]}[{lightIndex}].spotAngleLimit""", light.spotAngleLimit, False)
+        self.setFloat(f"""{self.attribs["light"]}[{lightIndex}].spotExpAttenuation""", light.spotExpAttenuation, False)
 
     def clearAllLights(self):
         maxLightsNum = int(self.attribs["maxLightsNum"])

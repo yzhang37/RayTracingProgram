@@ -6,8 +6,8 @@ from Point import Point
 
 
 class Scene(Component):
-    lights: Iterable[Light] = []
-    lightCubes: Iterable[Component] = []
+    lights: List[Light] = []
+    lightCubes: List[Component] = []
 
     def __init__(self):
         super().__init__(Point((0, 0, 0)))
