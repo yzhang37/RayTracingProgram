@@ -11,6 +11,7 @@ import numpy as np
 
 import ColorType
 from Animation import Animation
+from DisplayableEllipsoid import DisplayableEllipsoid
 from SceneType import Scene
 from Component import Component
 from Light import Light
@@ -65,12 +66,41 @@ class SceneTwo(Scene):
         self.shaderProg = shaderProg
         self.glutility = GLUtility.GLUtility()
 
-        sphere = Component(Point((0, 0, 0)), DisplayableSphere(shaderProg, 1.0))
-        m1 = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.2, 0.2, 0.2, 1)),
+        # Add one hardwood floor
+        hardwood = Component(Point((0, -1, 0)), DisplayableCube(shaderProg, 7, 0.5, 7))
+        mat_hardwood = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
+                      np.array((0.4, 0.4, 0.4, 0.1)), 32)
+        hardwood.setMaterial(mat_hardwood)
+        hardwood.renderingRouting = "lighting_texture"
+        hardwood.setTexture(self.shaderProg, "assets/hardwood.png")
+        hardwood.setNormalMap(self.shaderProg, "assets/hardwood_norm.png")
+        self.addChild(hardwood)
+
+        # Add one basketball
+        basketball = Component(Point((-1.2, 0, -1)),
+                               DisplayableSphere(shaderProg, 0.7, color=ColorType.ColorType(
+                                   155 / 255, 79 / 255, 44 / 255)))
+        mat_basket = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
                       np.array((0.4, 0.4, 0.4, 0.1)), 64)
-        sphere.setMaterial(m1)
-        sphere.renderingRouting = "lighting"
-        self.addChild(sphere)
+        basketball.setMaterial(mat_basket)
+        basketball.setTexture(self.shaderProg, "assets/basketball.png")
+        basketball.renderingRouting = "lighting_texture"
+        basketball.setNormalMap(self.shaderProg, "assets/basketball_norm.png")
+        self.addChild(basketball)
+
+        # Add one american football
+        american_football = Component(Point((1.2, 0, -1)),
+                                      DisplayableEllipsoid(shaderProg, 0.5, 0.5, 0.9, color=ColorType.ColorType(
+                                            136 / 255, 66 / 255, 30 / 255)))
+        mat_american_football = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
+                        np.array((0.4, 0.4, 0.4, 0.1)), 64)
+        american_football.setMaterial(mat_american_football)
+        american_football.setTexture(self.shaderProg, "assets/football.png")
+        american_football.renderingRouting = "lighting_texture"
+        american_football.setNormalMap(self.shaderProg, "assets/football_norm.png")
+        american_football.setDefaultAngle(90, american_football.vAxis)
+        american_football.setDefaultAngle(90, american_football.wAxis)
+        self.addChild(american_football)
 
         l0 = Light(Point([0.0, 1.5, 0.0]),
                    np.array((*ColorType.WHITE, 1.0)))

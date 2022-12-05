@@ -99,11 +99,11 @@ class DisplayableEllipsoid(Displayable):
         self.vertices = np.zeros((slices_1 * stacks_1, 11))
         self.indices = np.zeros((slices_1 * stacks_1, 6), dtype=np.uint32)
 
-        for i, u in enumerate(np.linspace(-pi / 2, pi / 2, slices_1)):
-            for j, v in enumerate(np.linspace(-pi, pi, stacks_1)):
-                vx = np.cos(u) * np.sin(v)
-                vy = np.sin(u) * np.sin(v)
-                vz = np.cos(v)
+        for i, phi in enumerate(np.linspace(-pi / 2, pi / 2, slices_1)):
+            for j, theta in enumerate(np.linspace(-pi, pi, stacks_1)):
+                vx = np.cos(phi) * np.cos(theta)
+                vy = np.cos(phi) * np.sin(theta)
+                vz = np.sin(phi)
                 x = radius_x * vx
                 y = radius_y * vy
                 z = radius_z * vz
@@ -116,7 +116,7 @@ class DisplayableEllipsoid(Displayable):
                 i_by_jp1 = i * stacks_1 + (j + 1) % stacks_1
                 ip1_by_jp1 = (i + 1) % slices_1 * stacks_1 + (j + 1) % stacks_1
 
-                self.vertices[i_by_j] = [x, y, z, nx, ny, nz, *color, j / slices, i / stacks]
+                self.vertices[i_by_j] = [x, y, z, nx, ny, nz, *color, j / stacks, i / slices]
                 self.indices[i_by_j] = [
                     i_by_j, ip1_by_j, i_by_jp1,
                     ip1_by_jp1, ip1_by_j, i_by_jp1]
