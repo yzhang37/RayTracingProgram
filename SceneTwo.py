@@ -148,24 +148,24 @@ class SceneTwo(Scene):
 
         v_def = Point((0, 0, 1))
         # add flashlight
-        flashlight_1 = create_flash_light(shaderProg)
+        flash1_obj = create_flash_light(shaderProg)
         fl1_pos = Point((1.5, -0.55, 2.5))
-        flashlight_1.setDefaultPosition(fl1_pos)
-        flashlight_1.setDefaultScale((0.35, 0.35, 0.35))
+        flash1_obj.setDefaultPosition(fl1_pos)
+        flash1_obj.setDefaultScale((0.35, 0.35, 0.35))
         fl1_direct = Point((1, 0.15, 1))
         rotate_axis = v_def.cross3d(fl1_direct)
         rotate_angle = v_def.angleWith(fl1_direct)
         rotate_q = Quaternion.axisAngleToQuaternion(rotate_axis, rotate_angle)
-        flashlight_1.setPreRotation(rotate_q.toMatrix())
-        self.addChild(flashlight_1)
-        flash_l1 = Light(fl1_pos, np.array((*ColorType.WHITE, 1.0)), None,
+        flash1_obj.setPreRotation(rotate_q.toMatrix())
+        self.addChild(flash1_obj)
+        flash1_light = Light(fl1_pos, np.array((*ColorType.WHITE, 1.0)), None,
                          spotDirection=fl1_direct,
                          spotRadialFactor=np.array((0.01, 0.1, 0.05)),
                          spotAngleLimit=math.cos(math.pi / 5),
                          spotExpAttenuation=16)
 
-        self.lights = [flash_l1]
-        self.lightCubes = [lightCube0, ]
+        self.lights = [l0, flash1_light]
+        self.lightCubes = [lightCube0, flash1_obj]
 
     def initialize(self):
         self.shaderProg.clearAllLights()
