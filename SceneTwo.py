@@ -65,12 +65,12 @@ class SceneTwo(Scene):
         self.shaderProg = shaderProg
         self.glutility = GLUtility.GLUtility()
 
-        cube = Component(Point((0, 0, 0)), DisplayableSphere(shaderProg, 1.0))
+        sphere = Component(Point((0, 0, 0)), DisplayableSphere(shaderProg, 1.0))
         m1 = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.2, 0.2, 0.2, 1)),
                       np.array((0.4, 0.4, 0.4, 0.1)), 64)
-        cube.setMaterial(m1)
-        cube.renderingRouting = "lighting"
-        self.addChild(cube)
+        sphere.setMaterial(m1)
+        sphere.renderingRouting = "lighting"
+        self.addChild(sphere)
 
         l0 = Light(Point([0.0, 1.5, 0.0]),
                    np.array((*ColorType.WHITE, 1.0)))
