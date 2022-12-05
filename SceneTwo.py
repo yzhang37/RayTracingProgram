@@ -43,7 +43,7 @@ from DisplayableSphere import DisplayableSphere
 #   DisplayableCylinder(endRadius, height, slices, stacks)
 #
 
-##### TODO 5: Create your scenes
+##### 5: Create your scenes
 # Requirements:
 #   1. We provide a fixed scene (SceneOne) for you with preset lights, material, and model parameters.
 #   This scene will be used to examine your illumination implementation, and you should not modify it.

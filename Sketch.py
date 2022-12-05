@@ -120,6 +120,10 @@ class Sketch(CanvasBase):
     diffuseOn: bool = True
     specularOn: bool = True
 
+    # scenes
+    sceneList = [SceneOne, SceneTwo]
+    sceneIndex = 0
+
     def __init__(self, parent):
         """
         Init everything. You should set your model here.
@@ -153,6 +157,10 @@ class Sketch(CanvasBase):
         self.topLevelComponent.addChild(self.scene)
         self.topLevelComponent.initialize()
 
+    def changeScene(self, index):
+        self.sceneIndex = index % len(self.sceneList)
+        self.switchScene(self.sceneList[self.sceneIndex](self.shaderProg))
+
     def InitGL(self):
         self.shaderProg = GLProgram()
         self.shaderProg.compile()
@@ -162,7 +170,7 @@ class Sketch(CanvasBase):
         self.basisAxes = ModelAxes(self.shaderProg, Point((0, 0, 0)))
         self.basisAxes.initialize()
 
-        self.switchScene(SceneOne(self.shaderProg))
+        self.changeScene(1)
 
         gl.glClearColor(*self.backgroundColor, 1.0)
         gl.glClearDepth(1.0)
@@ -383,9 +391,11 @@ class Sketch(CanvasBase):
         if keycode in [wx.WXK_RETURN]:
             self.update()
         elif keycode in [wx.WXK_LEFT]:
-            self.update()
+            self.changeScene(self.sceneIndex - 1)
+            # self.update()
         elif keycode in [wx.WXK_RIGHT]:
-            self.update()
+            self.changeScene(self.sceneIndex + 1)
+            # self.update()
         elif keycode in [wx.WXK_UP]:
             self.Interrupt_Scroll(1)
             self.update()
