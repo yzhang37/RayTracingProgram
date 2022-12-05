@@ -11,6 +11,7 @@ import numpy as np
 
 import ColorType
 from Animation import Animation
+from DisplayableCylinder import DisplayableCylinder
 from DisplayableEllipsoid import DisplayableEllipsoid
 from SceneType import Scene
 from Component import Component
@@ -101,6 +102,19 @@ class SceneTwo(Scene):
         american_football.setDefaultAngle(90, american_football.vAxis)
         american_football.setDefaultAngle(90, american_football.wAxis)
         self.addChild(american_football)
+
+        mat_stick = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
+                             np.array((0.4, 0.4, 0.4, 0.1)), 64)
+        # three sticks
+        for i in np.linspace(-1, 1, 3):
+            stick = Component(Point((0 + i * 0.8, -0.3, 1.2)),
+                              DisplayableCylinder(shaderProg, 0.05, 0.05, 1, 36))
+            stick.setDefaultAngle(90, stick.uAxis)
+            stick.setMaterial(mat_stick)
+            stick.renderingRouting = "lighting_texture"
+            stick.setTexture(self.shaderProg, "assets/hardwood.png")
+            stick.setNormalMap(self.shaderProg, "assets/hardwood_norm.png")
+            self.addChild(stick)
 
         l0 = Light(Point([0.0, 1.5, 0.0]),
                    np.array((*ColorType.WHITE, 1.0)))
