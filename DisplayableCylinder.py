@@ -100,30 +100,31 @@ class DisplayableCylinder(Displayable):
         self.color = color
         hh = height / 2.0
 
-        nsides += 1
+        nsides_1 = nsides + 1
         # The first two vertices are used to store the
         # centers of the upper and lower circles.
         grp_size = 4
-        self.vertices = np.zeros((nsides * grp_size + 2, 11), dtype=np.float32)
+        self.vertices = np.zeros((nsides_1 * grp_size + 2, 11), dtype=np.float32)
         # lower circle center and upper circle center
-        self.vertices[0, 0:9] = [0, 0, -hh, 0, 0, -1, *color]
-        self.vertices[1, 0:9] = [0, 0, hh, 0, 0, 1, *color]
+        self.vertices[0] = [0, 0, -hh, 0, 0, -1, *color, 0.5, 0.5]
+        self.vertices[1] = [0, 0, hh, 0, 0, 1, *color, 0.5, 0.5]
         vOffset = 2
-        self.indices = np.zeros((nsides, 12), dtype=np.uint32)
+        self.indices = np.zeros((nsides_1, 12), dtype=np.uint32)
 
         pi = np.pi
         cone_sin = (radius_lower - radius_upper) / height
         cone_cos = np.sqrt(1 - cone_sin * cone_sin)
-        for i, theta in enumerate(np.linspace(-pi, pi, nsides)):
+        for i, theta in enumerate(np.linspace(-pi, pi, nsides_1)):
             cos_val = np.cos(theta)
             sin_val = np.sin(theta)
             # lower surface
             x_lower = radius_lower * cos_val
             y_lower = radius_lower * sin_val
             z_lower = -hh
-            self.vertices[vOffset + grp_size*i, 0:9] = [
-                x_lower, y_lower, z_lower, 0, 0, -1, *color]
-            ip1 = (i + 1) % nsides
+            self.vertices[vOffset + grp_size*i] = [
+                x_lower, y_lower, z_lower, 0, 0, -1, *color,
+                cos_val * 0.5 + 0.5, sin_val * 0.5 + 0.5]
+            ip1 = (i + 1) % nsides_1
             self.indices[i, 0:3] = [0, vOffset + grp_size*i, vOffset + grp_size * ip1]
 
             x_upper = radius_upper * cos_val
@@ -131,17 +132,22 @@ class DisplayableCylinder(Displayable):
             z_upper = hh
 
             # side surface, we have to redefine the vertices above since they have different normals
-            self.vertices[vOffset + grp_size*i + 1, 0:9] = [
-                x_lower, y_lower, z_lower, cos_val * cone_cos, sin_val * cone_cos, cone_sin, *color]
-            self.vertices[vOffset + grp_size*i + 2, 0:9] = [
-                x_upper, y_upper, z_upper, cos_val * cone_cos, sin_val * cone_cos, cone_sin, *color]
+            self.vertices[vOffset + grp_size*i + 1] = [
+                x_lower, y_lower, z_lower,
+                cos_val * cone_cos, sin_val * cone_cos, cone_sin, *color,
+                i / nsides, 0]
+            self.vertices[vOffset + grp_size*i + 2] = [
+                x_upper, y_upper, z_upper,
+                cos_val * cone_cos, sin_val * cone_cos, cone_sin, *color,
+                i / nsides, 1]
             self.indices[i, 3:9] = [
                 vOffset + grp_size*i + 1, vOffset + grp_size*i + 2, vOffset + grp_size*ip1 + 2,
                 vOffset + grp_size*i + 1, vOffset + grp_size*ip1 + 2, vOffset + grp_size*ip1 + 1]
 
             # upper surface
-            self.vertices[vOffset + grp_size*i + 3, 0:9] = [
-                x_upper, y_upper, z_upper, 0, 0, 1, *color]
+            self.vertices[vOffset + grp_size*i + 3] = [
+                x_upper, y_upper, z_upper, 0, 0, 1, *color,
+                cos_val * 0.5 + 0.5, sin_val * 0.5 + 0.5]
             self.indices[i, 9:12] = [1, vOffset + grp_size*i + 3, vOffset + grp_size*ip1 + 3]
 
         self.indices = self.indices.flatten("C")

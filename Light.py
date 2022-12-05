@@ -32,7 +32,7 @@ class Light:
                  infiniteDirection: Union[np.ndarray, Point, None] = None,
                  spotDirection: Union[np.ndarray, Point, None] = None,
                  spotRadialFactor: Optional[np.ndarray] = None,
-                 spotAngleLimit: Union[float, int] = 0,
+                 spotAngleLimit: Union[float] = 0,
                  spotExpAttenuation: Union[float, int] = 1.0):
         # set basic light
         if position is not None:
@@ -56,10 +56,11 @@ class Light:
         if spotDirection is not None:
             self.spotOn = True
             self.setSpotDirection(spotDirection)
-            self.setSpotRadialFactor(spotRadialFactor if (spotDirection is not None) else np.array((0, 0, 0)))
+            self.setSpotRadialFactor(spotRadialFactor)
         else:
             self.spotOn = False
             self.spotDirection = np.array((0, 0, 0))
+            self.spotRadialFactor = np.array((0, 0, 0))
         self.setSpotAngleLimit(spotAngleLimit)
         self.setSpotExpAttenuation(spotExpAttenuation)
 

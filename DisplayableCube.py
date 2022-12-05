@@ -73,38 +73,38 @@ class DisplayableCube(Displayable):
         hw = width / 2
         hh = height / 2
 
-        vertices_def = np.array([
+        self.vertices = np.array([
             # back face
-            -hl, -hw, -hh, 0, 0, -1, *color,
-            -hl, hw, -hh, 0, 0, -1, *color,
-            hl, hw, -hh, 0, 0, -1, *color,
-            hl, -hw, -hh, 0, 0, -1, *color,
+            hl, -hw, -hh, 0, 0, -1, *color, 0, 0,
+            -hl, -hw, -hh, 0, 0, -1, *color, 1, 0,
+            -hl, hw, -hh, 0, 0, -1, *color, 1, 1,
+            hl, hw, -hh, 0, 0, -1, *color, 0, 1,
             # front face
-            -hl, -hw, hh, 0, 0, 1, *color,
-            hl, -hw, hh, 0, 0, 1, *color,
-            hl, hw, hh, 0, 0, 1, *color,
-            -hl, hw, hh, 0, 0, 1, *color,
+            -hl, -hw, hh, 0, 0, 1, *color, 0, 0,
+            hl, -hw, hh, 0, 0, 1, *color, 1, 0,
+            hl, hw, hh, 0, 0, 1, *color, 1, 1,
+            -hl, hw, hh, 0, 0, 1, *color, 0, 1,
             # left face
-            -hl, -hw, -hh, -1, 0, 0, *color,
-            -hl, -hw, hh, -1, 0, 0, *color,
-            -hl, hw, hh, -1, 0, 0, *color,
-            -hl, hw, -hh, -1, 0, 0, *color,
+            -hl, -hw, -hh, -1, 0, 0, *color, 0, 0,
+            -hl, -hw, hh, -1, 0, 0, *color, 1, 0,
+            -hl, hw, hh, -1, 0, 0, *color, 1, 1,
+            -hl, hw, -hh, -1, 0, 0, *color, 0, 1,
             # right face
-            hl, -hw, hh, 1, 0, 0, *color,
-            hl, -hw, -hh, 1, 0, 0, *color,
-            hl, hw, -hh, 1, 0, 0, *color,
-            hl, hw, hh, 1, 0, 0, *color,
+            hl, -hw, hh, 1, 0, 0, *color, 0, 0,
+            hl, -hw, -hh, 1, 0, 0, *color, 1, 0,
+            hl, hw, -hh, 1, 0, 0, *color, 1, 1,
+            hl, hw, hh, 1, 0, 0, *color, 0, 1,
             # top face
-            -hl, hw, hh, 0, 1, 0, *color,
-            hl, hw, hh, 0, 1, 0, *color,
-            hl, hw, -hh, 0, 1, 0, *color,
-            -hl, hw, -hh, 0, 1, 0, *color,
+            -hl, hw, hh, 0, 1, 0, *color, 0, 0,
+            hl, hw, hh, 0, 1, 0, *color, 1, 0,
+            hl, hw, -hh, 0, 1, 0, *color, 1, 1,
+            -hl, hw, -hh, 0, 1, 0, *color, 0, 1,
             # bot face
-            -hl, -hw, -hh, 0, -1, 0, *color,
-            hl, -hw, -hh, 0, -1, 0, *color,
-            hl, -hw, hh, 0, -1, 0, *color,
-            -hl, -hw, hh, 0, -1, 0, *color,
-        ]).reshape((-1, 9))
+            -hl, -hw, -hh, 0, -1, 0, *color, 0, 0,
+            hl, -hw, -hh, 0, -1, 0, *color, 1, 0,
+            hl, -hw, hh, 0, -1, 0, *color, 1, 1,
+            -hl, -hw, hh, 0, -1, 0, *color, 0, 1,
+        ]).reshape((-1, 11))
 
         indices_def = np.array([
             # back face
@@ -120,10 +120,6 @@ class DisplayableCube(Displayable):
             # bot face
             20, 21, 22, 20, 22, 23,
         ])
-
-        defined_dim = vertices_def.shape
-        self.vertices = np.zeros((defined_dim[0], 11))
-        self.vertices[:, 0:9] = vertices_def
 
         self.indices = np.array(indices_def)
 

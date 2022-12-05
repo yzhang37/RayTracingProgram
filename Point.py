@@ -64,8 +64,8 @@ class Point:
             return False
         else:
             return (self.coords == other.getCoords()).all() and \
-                    self.texture == other.getTextureCoords() and \
-                    self.color == other.getColor()
+                   self.texture == other.getTextureCoords() and \
+                   self.color == other.getColor()
 
     def __iter__(self):
         return iter(self.coords)
@@ -75,9 +75,6 @@ class Point:
 
     def __getitem__(self, i):
         return self.coords[i]
-
-    def __setitem__(self, i, value):
-        self.coords[i] = value
 
     def __mul__(self, coefficient):
         return Point([coefficient * i for i in self.coords], self.color, self.texture)
@@ -131,6 +128,23 @@ class Point:
         # any other iterable variable multiplied with these types will be forced to convert to np.array type
         return float(np.dot(self.coords, pt.coords))
 
+    def distance(self, pt):
+        """
+        get the distance between this Point and another Point
+
+        :rtype: float
+        """
+        if (self.coords is None) or (pt.coords is None):
+            raise Exception("Cannot calculate distance between empty Points")
+        if len(self.coords) != len(pt.coords):
+            raise Exception("Cannot calculate distance between Points with different size")
+
+        diff = self - pt
+
+        # this float conversion is necessary, otherwise result will have type np.float32/np.int/np.float64
+        # any other iterable variable multiplied with these types will be forced to convert to np.array type
+        return float(np.sqrt(np.dot(diff.coords, diff.coords)))
+
     def reflect(self, normal):
         """
         reflect the vector from origin to self.coords, normalPoint's coords is the normal of the plane that vector
@@ -145,16 +159,24 @@ class Point:
         ndp = 2 * self.dot(n)
         return self - ndp * n
 
-    def cross3d(self, anotherVector):
+    def cross3d(self, anotherVector) -> "Point":
         """
         cross product the vector with another vector
         """
         if (self.coords is None) or (anotherVector.coords is None) or \
                 (len(self.coords) != 3) or (len(anotherVector.coords) != 3):
-            raise Exception("Error v argument for cross product 3D. Only accept 3 dimension Point")
+            raise Exception("Error input argument for cross product 3D. Only accept 3 dimension Point")
         s = self.coords
         d = anotherVector.coords
         return Point((s[1]*d[2]-s[2]*d[1], s[2]*d[0]-s[0]*d[2], s[0]*d[1]-s[1]*d[0]))
+
+    def angleWith(self, anotherVector) -> float:
+        """
+        get the angle between two vectors
+        """
+        if (self.coords is None) or (anotherVector.coords is None):
+            raise Exception("Error input argument for angle calculation. Only accept 3 dimension Point")
+        return np.arccos(self.dot(anotherVector) / (self.norm() * anotherVector.norm()))
 
     def setColor(self, color):
         """
@@ -237,7 +259,7 @@ if __name__ == "__main__":
     b = a.copy()
     print("Point copied from point a: ", b)
     try:
-        print("Test for illegal v")
+        print("Test for illegal input")
         c = Point((1.5, 4))
     except:
         print("Get Error")
