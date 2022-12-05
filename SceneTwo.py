@@ -64,6 +64,8 @@ def create_flash_light(shaderProg: GLProgram,
                        lightColor: ColorType.ColorType = ColorType.WHITE) -> Component:
     flashlight_core = Component(Point((0, 0, 0)),
                                 DisplayableCylinder(shaderProg, 0.4, 0.5, 0.8, 36, color=lightColor))
+    flashlight_core.setDefaultAngle(180, flashlight_core.vAxis)
+    flashlight_core.setDefaultAngle(180, flashlight_core.wAxis)
     flashlight_core.renderingRouting = "vertex"
     mat_flashshell = Material(np.array((0, 0, 0, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
                               np.array((1, 1, 1, 0.1)), 8)
@@ -150,7 +152,7 @@ class SceneTwo(Scene):
         fl1_pos = Point((1.5, -0.55, 2.5))
         flashlight_1.setDefaultPosition(fl1_pos)
         flashlight_1.setDefaultScale((0.35, 0.35, 0.35))
-        fl1_direct = Point((1, -0.15, -1))
+        fl1_direct = Point((1, 0.15, 1))
         rotate_axis = v_def.cross3d(fl1_direct)
         rotate_angle = v_def.angleWith(fl1_direct)
         rotate_q = Quaternion.axisAngleToQuaternion(rotate_axis, rotate_angle)
