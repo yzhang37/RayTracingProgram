@@ -389,8 +389,8 @@ void main()
     FragColor = outputResult;
 }}
         """
-        with open("sfile.shader", "w") as f:
-            f.write(fss)
+        # with open("sfile.shader", "w") as f:
+        #     f.write(fss)
         return fss
 
     def set_vss(self, vss: str):
