@@ -163,6 +163,6 @@ class DisplayableCylinder(Displayable):
                                   stride=11, offset=3, attribSize=3)
         self.vbo.setAttribPointer(self.shaderProg.getAttribLocation("vertexColor"),
                                   stride=11, offset=6, attribSize=3)
-        # TODO/BONUS 6.1 is at here, you need to set attribPointer for texture coordinates
-        # you should check the corresponding variable name in GLProgram and set the pointer
+        self.vbo.setAttribPointer(self.shaderProg.getAttribLocation("vertexTexture"),
+                                  stride=11, offset=9, attribSize=2)
         self.vao.unbind()

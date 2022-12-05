@@ -92,15 +92,15 @@ class DisplayableEllipsoid(Displayable):
         self.stacks = stacks
         self.color = color
 
-        pi = math.pi
-        slices += 1
-        stacks += 1
+        pi = np.pi
+        slices_1 = slices + 1
+        stacks_1 = stacks + 1
 
-        self.vertices = np.zeros((slices * stacks, 11))
-        self.indices = np.zeros((slices * stacks, 6), dtype=np.uint32)
+        self.vertices = np.zeros((slices_1 * stacks_1, 11))
+        self.indices = np.zeros((slices_1 * stacks_1, 6), dtype=np.uint32)
 
-        for i, u in enumerate(np.linspace(-pi / 2, pi / 2, slices)):
-            for j, v in enumerate(np.linspace(-pi, pi, stacks)):
+        for i, u in enumerate(np.linspace(-pi / 2, pi / 2, slices_1)):
+            for j, v in enumerate(np.linspace(-pi, pi, stacks_1)):
                 vx = np.cos(u) * np.sin(v)
                 vy = np.sin(u) * np.sin(v)
                 vz = np.cos(v)
@@ -111,13 +111,12 @@ class DisplayableEllipsoid(Displayable):
                 ny = vy / radius_y
                 nz = vz / radius_z
 
-                i_by_j = i * stacks + j
-                ip1_by_j = (i + 1) % slices * stacks + j
-                i_by_jp1 = i * stacks + (j + 1) % stacks
-                ip1_by_jp1 = (i + 1) % slices * stacks + (j + 1) % stacks
+                i_by_j = i * stacks_1 + j
+                ip1_by_j = (i + 1) % slices_1 * stacks_1 + j
+                i_by_jp1 = i * stacks_1 + (j + 1) % stacks_1
+                ip1_by_jp1 = (i + 1) % slices_1 * stacks_1 + (j + 1) % stacks_1
 
-                self.vertices[i_by_j, 0:9] = [x, y, z, nx, ny, nz, *color]
-                # self.vertices[i * stacks + j, 9:11] = [i / slices, j / stacks]
+                self.vertices[i_by_j] = [x, y, z, nx, ny, nz, *color, j / slices, i / stacks]
                 self.indices[i_by_j] = [
                     i_by_j, ip1_by_j, i_by_jp1,
                     ip1_by_jp1, ip1_by_j, i_by_jp1]
@@ -140,6 +139,6 @@ class DisplayableEllipsoid(Displayable):
                                   stride=11, offset=3, attribSize=3)
         self.vbo.setAttribPointer(self.shaderProg.getAttribLocation("vertexColor"),
                                   stride=11, offset=6, attribSize=3)
-        # TODO/BONUS 6.1 is at here, you need to set attribPointer for texture coordinates
-        # you should check the corresponding variable name in GLProgram and set the pointer
+        self.vbo.setAttribPointer(self.shaderProg.getAttribLocation("vertexTexture"),
+                                  stride=11, offset=9, attribSize=2)
         self.vao.unbind()

@@ -16,6 +16,7 @@ from Component import Component
 from Light import Light
 from Material import Material
 from Point import Point
+from PIL import Image
 import GLUtility
 
 from DisplayableCube import DisplayableCube
@@ -44,18 +45,24 @@ class SceneOne(Scene, Animation):
         self.lAngles = [0, 0, 0]
 
         sphere = Component(Point((-1, 0, 0)), DisplayableSphere(shaderProg, 1.0))
-        m1 = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.2, 0.2, 0.2, 1)),
-                      np.array((0.4, 0.4, 0.4, 0.1)), 64)
+        m1 = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.5, 0.5, 0.5, 1)),
+                      np.array((0.8, 0.8, 0.8, 0.1)), 16)
+        sphere.setDefaultAngle(-90, sphere.uAxis)
+        sphere.setDefaultAngle(180, sphere.wAxis)
         sphere.setMaterial(m1)
-        sphere.renderingRouting = "lighting"
+        sphere.setTexture(self.shaderProg, 'assets/earth.jpg')
+        sphere.renderingRouting = "lighting_texture"
+        sphere.setNormalMap(self.shaderProg, 'assets/earth_normal.png')
         self.addChild(sphere)
 
         torus = Component(Point((1, 0, 0)), DisplayableTorus(shaderProg, 0.25, 0.5, 36, 36))
         m2 = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.2, 0.2, 0.2, 1)),
                       np.array((0, 0, 0, 1.0)), 64)
         torus.setMaterial(m2)
-        torus.renderingRouting = "lighting"
+        torus.renderingRouting = "lighting_texture"
         torus.rotate(90, torus.uAxis)
+        torus.setTexture(self.shaderProg, 'assets/marble.jpg')
+        torus.setNormalMap(self.shaderProg, 'assets/normalmap.jpg')
         self.addChild(torus)
 
         cylinder = Component(Point((1, 0, -2)), DisplayableCylinder(shaderProg, 0.3, 0.7, 1, 36))

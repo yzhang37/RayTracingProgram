@@ -66,7 +66,9 @@ class GLProgram:
             "vertexColor": "aColor",
             "vertexTexture": "aTexture",
 
-            "textureImage": "theTexture01",
+            "textureImage": "txt_text",
+            "normalMap": "txt_norm",
+            "useNormalMap": "txt_normOn",
 
             "projectionMat": "projection",
             "viewMat": "view",
@@ -158,6 +160,8 @@ class GLProgram:
         _aOn = self.attribs["ambientOn"]
         _dOn = self.attribs["diffuseOn"]
         _sOn = self.attribs["specularOn"]
+        _txtrNorm = self.attribs["normalMap"]
+        _useNorm = self.attribs["useNormalMap"]
 
         fss = f"""
 #version 330 core
@@ -168,6 +172,7 @@ struct Material{{
     vec4 diffuse;
     vec4 specular;
     float highlight;
+    bool useNormalMap;
 }};
 
 struct Light{{
@@ -191,6 +196,8 @@ in vec2 vTexture;
 
 uniform int renderingFlag;
 uniform sampler2D {_txtrImg};
+uniform sampler2D {_txtrNorm};
+uniform bool {_useNorm};
 
 uniform vec3 {_viewPosition};
 uniform Material {_material};
@@ -205,7 +212,7 @@ void main()
 {{
     // These three lines are meaningless, they only works as attributes placeholder! 
     // Otherwise glsl will optimize out our attributes
-    vec4 placeHolder = vec4(vPos+vColor+vNormal+vec3(vTexture, 1), 0);
+    vec4 placeHolder = vec4(vPos + vColor + vNormal + vec3(vTexture, 1), 0);
     FragColor = -1 * abs(placeHolder);
     FragColor = clamp(FragColor, 0, 1);
     
@@ -213,17 +220,32 @@ void main()
     for(int i=0; i<8; i+=1)
         results[i]=vec4(0.0);
     int ri=0;
+    vec3 compNormal = vNormal;
     
-    ////////// BONUS 7: Normal Mapping
+    ////////// 7: Normal Mapping
     // Requirements:
     //   1. Perform the same steps as Texture Mapping above, except that instead of using the image for vertex 
     //   color, the image is used to modify the normals.
     //   2. Use the input normal map (“./assets/normalmap.jpg”) on both the sphere and the torus.
+    if ({_useNorm}) {{
+        vec3 normalMap = texture({_txtrNorm}, vTexture).rgb;
+        normalMap = normalize(normalMap * 2.0 - 1.0);
+        vec3 tangent = normalize(vec3(1.0, 0.0, 0.0));
+        vec3 bitangent = normalize(cross(normalMap, tangent));
+        mat3 TBN = mat3(tangent, bitangent, normalMap);
+        compNormal = normalize(TBN * vNormal);
+    }}
 
-    
+    bool useLighting = (renderingFlag >> 0 & 0x1) == 1;
+    bool useTexture = (renderingFlag >> 8 & 0x1) == 1;
     // Reserved for illumination rendering, routing name is "lighting" or "illumination"
-    if ((renderingFlag >> 0 & 0x1) == 1){{
-        vec4 v4Color = vec4(vColor, 1.0);
+    if (useLighting) {{
+        vec4 v4Color;
+        if (!useTexture) {{
+            v4Color = vec4(vColor, 1.0);
+        }} else {{
+            v4Color = texture({_txtrImg}, vTexture);
+        }}
         vec4 iSum = vec4(0.0);
 
         // Part 3: Illuminate your meshes
@@ -258,7 +280,7 @@ void main()
                 continue;
             
             vec4 i_diffuse = vec4(0.0);
-            vec3 N = normalize(vNormal);
+            vec3 N = normalize(compNormal);
             float N_dot_L = dot(N, L);
             if ({_dOn} && N_dot_L > 0.0)
                 i_diffuse = ({_material}.diffuse * N_dot_L) * {_light}[i].color;
@@ -328,7 +350,7 @@ void main()
         //   (i.e. the rgb values come from the xyz components of the normal). The value for each dimension in 
         //   vertex normal will be in the range -1 to 1. You will need to offset and rescale them to the 
         //   range 0 to 1.
-        vec3 offset_normal = vNormal * 0.5 + 0.5;
+        vec3 offset_normal = compNormal * 0.5 + 0.5;
         results[ri] = vec4(offset_normal, 1.0);
         ri+=1;
     }}
@@ -354,7 +376,7 @@ void main()
     
     // Reserved for texture mapping, get point color from texture image and texture coordinates
     // Routing name is "texture"
-    if ((renderingFlag >> 8 & 0x1) == 1){{
+    if (useTexture && !useLighting){{
         results[ri] = texture({_txtrImg}, vTexture);
         ri+=1;
     }}
@@ -367,8 +389,8 @@ void main()
     FragColor = outputResult;
 }}
         """
-        with open("sfile.shader", "w") as f:
-            f.write(fss)
+        # with open("sfile.shader", "w") as f:
+        #     f.write(fss)
         return fss
 
     def set_vss(self, vss: str):
