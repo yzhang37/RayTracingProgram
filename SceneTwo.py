@@ -26,6 +26,7 @@ from DisplayableCube import DisplayableCube
 from DisplayableTorus import DisplayableTorus
 from DisplayableSphere import DisplayableSphere
 
+
 ##### 1: Generate Triangle Meshes
 # Requirements:
 #   1. Use Element Buffer Object (EBO) to draw the cube. The cube provided in the start code is drawn with Vertex Buffer
@@ -58,6 +59,13 @@ from DisplayableSphere import DisplayableSphere
 #      * All types of lights should be used
 #   3. Provide a keyboard interface that allows the user to toggle on/off each of the lights in your scene model:
 #   Hit 1, 2, 3, 4, etc. to identify which light to toggle.
+
+
+def vec1_to_vec2(v1: Point, v2: Point) -> np.ndarray:
+    rotate_axis = v1.cross3d(v2)
+    rotate_angle = v1.angleWith(v2)
+    rotate_q = Quaternion.axisAngleToQuaternion(rotate_axis, rotate_angle)
+    return rotate_q.toMatrix()
 
 
 def create_flash_light(shaderProg: GLProgram,
@@ -94,7 +102,7 @@ class SceneTwo(Scene):
         # Add one hardwood floor
         hardwood = Component(Point((0, -1, 0)), DisplayableCube(shaderProg, 7, 0.5, 7))
         mat_hardwood = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
-                      np.array((0.4, 0.4, 0.4, 0.1)), 32)
+                                np.array((0.4, 0.4, 0.4, 0.1)), 32)
         hardwood.setMaterial(mat_hardwood)
         hardwood.renderingRouting = "lighting_texture"
         hardwood.setTexture(self.shaderProg, "assets/hardwood.png")
@@ -106,7 +114,7 @@ class SceneTwo(Scene):
                                DisplayableSphere(shaderProg, 0.7, color=ColorType.ColorType(
                                    155 / 255, 79 / 255, 44 / 255)))
         mat_basket = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
-                      np.array((0.4, 0.4, 0.4, 0.1)), 64)
+                              np.array((0.4, 0.4, 0.4, 0.1)), 64)
         basketball.setMaterial(mat_basket)
         basketball.setTexture(self.shaderProg, "assets/basketball.png")
         basketball.renderingRouting = "lighting_texture"
@@ -116,9 +124,9 @@ class SceneTwo(Scene):
         # Add one american football
         american_football = Component(Point((1.2, 0, -1)),
                                       DisplayableEllipsoid(shaderProg, 0.5, 0.5, 0.9, color=ColorType.ColorType(
-                                            136 / 255, 66 / 255, 30 / 255)))
+                                          136 / 255, 66 / 255, 30 / 255)))
         mat_american_football = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
-                        np.array((0.4, 0.4, 0.4, 0.1)), 64)
+                                         np.array((0.4, 0.4, 0.4, 0.1)), 64)
         american_football.setMaterial(mat_american_football)
         american_football.setTexture(self.shaderProg, "assets/football.png")
         american_football.renderingRouting = "lighting_texture"
@@ -147,25 +155,35 @@ class SceneTwo(Scene):
         self.addChild(lightCube0)
 
         v_def = Point((0, 0, 1))
+        flashlight_scale = (0.35, 0.35, 0.35)
+        flashlight_settings = {
+            "spotRadialFactor": np.array((0.05, 0.1, 0.01)),
+            "spotAngleLimit": math.cos(math.pi / 5),
+            "spotExpAttenuation": 16
+        }
         # add flashlight
         flash1_obj = create_flash_light(shaderProg)
         fl1_pos = Point((1.5, -0.55, 2.5))
         flash1_obj.setDefaultPosition(fl1_pos)
-        flash1_obj.setDefaultScale((0.35, 0.35, 0.35))
+        flash1_obj.setDefaultScale(flashlight_scale)
         fl1_direct = Point((1, 0.15, 1))
-        rotate_axis = v_def.cross3d(fl1_direct)
-        rotate_angle = v_def.angleWith(fl1_direct)
-        rotate_q = Quaternion.axisAngleToQuaternion(rotate_axis, rotate_angle)
-        flash1_obj.setPreRotation(rotate_q.toMatrix())
+        flash1_obj.setPreRotation(vec1_to_vec2(v_def, fl1_direct))
         self.addChild(flash1_obj)
         flash1_light = Light(fl1_pos, np.array((*ColorType.WHITE, 1.0)), None,
-                         spotDirection=fl1_direct,
-                         spotRadialFactor=np.array((0.01, 0.1, 0.05)),
-                         spotAngleLimit=math.cos(math.pi / 5),
-                         spotExpAttenuation=16)
+                             spotDirection=fl1_direct, **flashlight_settings)
 
-        self.lights = [l0, flash1_light]
-        self.lightCubes = [lightCube0, flash1_obj]
+        flash2_obj = create_flash_light(shaderProg)
+        fl2_pos = Point((-2.2, -0.55, -0.2))
+        flash2_obj.setDefaultPosition(fl2_pos)
+        flash2_obj.setDefaultScale(flashlight_scale)
+        fl2_direct = Point((-2, 0.15, 1))
+        flash2_obj.setPreRotation(vec1_to_vec2(v_def, fl2_direct))
+        self.addChild(flash2_obj)
+        flash2_light = Light(fl2_pos, np.array((*ColorType.WHITE, 1.0)), None,
+                             spotDirection=fl2_direct, **flashlight_settings)
+
+        self.lights = [flash1_light, flash2_light]
+        self.lightCubes = [lightCube0, flash1_obj, flash2_obj]
 
     def initialize(self):
         self.shaderProg.clearAllLights()
