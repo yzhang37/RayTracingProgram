@@ -62,6 +62,7 @@ class SceneOne(Scene, Animation):
         torus.renderingRouting = "lighting_texture"
         torus.rotate(90, torus.uAxis)
         torus.setTexture(self.shaderProg, 'assets/marble.jpg')
+        torus.setNormalMap(self.shaderProg, 'assets/normalmap.jpg')
         self.addChild(torus)
 
         cylinder = Component(Point((1, 0, -2)), DisplayableCylinder(shaderProg, 0.3, 0.7, 1, 36))
