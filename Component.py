@@ -13,6 +13,7 @@ import numpy as np
 from PIL import Image
 
 import GLBuffer
+from GLProgram import GLProgram
 from Material import Material
 from Point import Point
 from ColorType import ColorType
@@ -82,6 +83,8 @@ class Component:
 
     texture = None
     textureOn = False
+    normalMap = None
+    normalMapOn = False
     material = None
     renderingRouting = None
 
@@ -126,6 +129,7 @@ class Component:
         self.postRotationMat = np.identity(4)
         self.material = Material()
         self.texture = Texture()
+        self.normalMap = Texture()
 
     def addChild(self, child):
         """
@@ -167,7 +171,7 @@ class Component:
         # use init value to generate transformation matrix for all children
         self.update()
 
-    def draw(self, shaderProg):
+    def draw(self, shaderProg: GLProgram):
         if isinstance(self.displayObj, Displayable):
             shaderProg.setMat4("modelMat", self.transformationMat)
             shaderProg.setVec4("diffuse", self.material.diffuse)
@@ -181,6 +185,14 @@ class Component:
             else:
                 shaderProg.use()
                 self.texture.unbind(shaderProg.getUniformLocation("textureImage"))
+            if self.normalMapOn:
+                shaderProg.use()
+                shaderProg.setBool("useNormalMap", True)
+                self.normalMap.bind(shaderProg.getUniformLocation("normalMap"))
+            else:
+                shaderProg.use()
+                shaderProg.setBool("useNormalMap", False)
+                self.normalMap.unbind(shaderProg.getUniformLocation("normalMap"))
             self.displayObj.draw()
 
         for c in self.children:
@@ -296,7 +308,7 @@ class Component:
             result = max(result, low_bound)
         return result
 
-    def setTexture(self, shaderProg, imgFilePath, textureOn=True):
+    def setTexture(self, shaderProg: GLProgram, imgFilePath, textureOn=True):
         # apply texturek
         if not os.path.isfile(imgFilePath):
             raise TypeError("Image File doesn't exist")
@@ -306,6 +318,17 @@ class Component:
         texture_image = np.array(texture_image, dtype=np.uint8)
         self.texture.setTextureImage(texture_image)
         self.textureOn = textureOn
+
+    def setNormalMap(self, shaderProg: GLProgram, imgFilePath, normalMapOn=True):
+        # apply normal map
+        if not os.path.isfile(imgFilePath):
+            raise TypeError("Image File doesn't exist")
+
+        shaderProg.use()
+        normalMap = Image.open(imgFilePath).convert("RGB")
+        normalMap = np.array(normalMap, dtype=np.uint8)
+        self.normalMap.setTextureImage(normalMap)
+        self.normalMapOn = normalMapOn
 
     def setMaterial(self, material: Material):
         if not isinstance(material, Material):
