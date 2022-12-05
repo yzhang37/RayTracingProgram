@@ -13,6 +13,8 @@ import ColorType
 from Animation import Animation
 from DisplayableCylinder import DisplayableCylinder
 from DisplayableEllipsoid import DisplayableEllipsoid
+from GLProgram import GLProgram
+from Quaternion import Quaternion
 from SceneType import Scene
 from Component import Component
 from Light import Light
@@ -56,6 +58,26 @@ from DisplayableSphere import DisplayableSphere
 #      * All types of lights should be used
 #   3. Provide a keyboard interface that allows the user to toggle on/off each of the lights in your scene model:
 #   Hit 1, 2, 3, 4, etc. to identify which light to toggle.
+
+
+def create_flash_light(shaderProg: GLProgram,
+                       lightColor: ColorType.ColorType = ColorType.WHITE) -> Component:
+    flashlight_core = Component(Point((0, 0, 0)),
+                                DisplayableCylinder(shaderProg, 0.4, 0.5, 0.8, 36, color=lightColor))
+    flashlight_core.renderingRouting = "vertex"
+    mat_flashshell = Material(np.array((0, 0, 0, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
+                              np.array((1, 1, 1, 0.1)), 8)
+    flashlight_front = Component(Point((0, 0, -0.01)),
+                                 DisplayableCylinder(shaderProg, 0.5, 0.7, 0.8, 36, color=ColorType.WHITE))
+    flashlight_front.renderingRouting = "lighting"
+    flashlight_front.setMaterial(mat_flashshell)
+    flashlight_body = Component(Point((0, 0, -(2 + 0.8) / 2)),
+                                DisplayableCylinder(shaderProg, 0.35, 0.35, 2, 36, color=ColorType.WHITE))
+    flashlight_body.renderingRouting = "lighting"
+    flashlight_body.setMaterial(mat_flashshell)
+    flashlight_front.addChild(flashlight_body)
+    flashlight_core.addChild(flashlight_front)
+    return flashlight_core
 
 
 class SceneTwo(Scene):
@@ -116,13 +138,30 @@ class SceneTwo(Scene):
             stick.setNormalMap(self.shaderProg, "assets/hardwood_norm.png")
             self.addChild(stick)
 
-        l0 = Light(Point([0.0, 1.5, 0.0]),
+        l0 = Light(Point([0.0, 2, 0.0]),
                    np.array((*ColorType.WHITE, 1.0)))
-        lightCube0 = Component(Point((0.0, 1.5, 0.0)), DisplayableCube(shaderProg, 0.1, 0.1, 0.1, ColorType.WHITE))
+        lightCube0 = Component(Point((0.0, 2, 0.0)), DisplayableCube(shaderProg, 0.1, 0.1, 0.1, ColorType.WHITE))
         lightCube0.renderingRouting = "vertex"
-
         self.addChild(lightCube0)
-        self.lights = [l0, ]
+
+        v_def = Point((0, 0, 1))
+        # add flashlight
+        flashlight_1 = create_flash_light(shaderProg)
+        flashlight_1.setDefaultPosition(Point((1.5, -0.55, 2.5)))
+        flashlight_1.setDefaultScale((0.35, 0.35, 0.35))
+        v2 = Point((-1, -0.15, -1))
+        rotate_axis = v_def.cross3d(v2)
+        rotate_angle = v_def.angleWith(v2)
+        rotate_q = Quaternion.axisAngleToQuaternion(rotate_axis, rotate_angle)
+        flashlight_1.setPreRotation(rotate_q.toMatrix())
+        self.addChild(flashlight_1)
+        flash_l1 = Light(Point((1.5, -0.55, 2.5)), np.array((*ColorType.WHITE, 1.0)), None,
+                         spotDirection=v2,
+                         spotRadialFactor=np.array((5, 0.0, 5)),
+                         spotAngleLimit=1,
+                         spotExpAttenuation=0.5)
+
+        self.lights = [flash_l1]
         self.lightCubes = [lightCube0, ]
 
     def initialize(self):
