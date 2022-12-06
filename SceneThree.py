@@ -80,7 +80,7 @@ class SceneThree(Scene):
         # two plates
         plate1 = Component(Point((0.2, (0.5 + 0.05) / 2, 0)), DisplayableCylinder(
             shaderProg, 0.9, 0.9, 0.05, 36, Ct.WHITE))
-        plate1.setDefaultAngle(90, plate1.uAxis)
+        plate1.setDefaultAngle(-90, plate1.uAxis)
         plate1.renderingRouting = "vertex"
         table.addChild(plate1)
 
@@ -112,3 +112,15 @@ class SceneThree(Scene):
                 continue
             donut = get_donut(shaderProg, Point((0.4 * math.cos(theta), 0.4 * math.sin(theta), 0.1 + 0.2 * 2)))
             plate2.addChild(donut)
+
+        # add one cake (cylinder) to plate1
+        cake = Component(Point((0, 0, (0.05 + 0.4) / 2)), DisplayableCylinder(
+            shaderProg, 0.65, 0.65, 0.35, 36, Ct.YELLOW))
+        cake.setTexture(shaderProg, "assets/chocoside.jpg")
+        cake.renderingRouting = "texture"
+        plate1.addChild(cake)
+        cake_top = Component(Point((0, 0, (0.35 + 0.15) / 2)), DisplayableCylinder(
+            shaderProg, 0.67, 0.67, 0.15, 36, Ct.PURPLE))
+        cake_top.setTexture(shaderProg, "assets/chocotop.png")
+        cake_top.renderingRouting = "texture"
+        cake.addChild(cake_top)
