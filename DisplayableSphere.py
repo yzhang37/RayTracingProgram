@@ -5,11 +5,12 @@ First version in 10/20/2021
 :author: micou(Zezhou Sun)
 :version: 2021.1.1
 """
+from typing import Optional
 
 from Displayable import Displayable
 from GLBuffer import VAO, VBO, EBO
 import numpy as np
-import ColorType
+import ColorType as Ct
 import math
 
 try:
@@ -57,7 +58,7 @@ class DisplayableSphere(Displayable):
                  radius=1,
                  slices=30,
                  stacks=30,
-                 color=ColorType.BLUE):
+                 color=Ct.BLUE):
         super(DisplayableSphere, self).__init__()
         self.shaderProg = shaderProg
         self.shaderProg.use()
@@ -68,24 +69,33 @@ class DisplayableSphere(Displayable):
 
         self.generate(radius, slices, stacks, color)
 
-    def generate(self, radius, slices, stacks, color=None):
+    def generate(self,
+                 radius: float,
+                 slices: int,
+                 stacks: int,
+                 color: Optional[Ct.ColorType] = None):
+        # If the number of slices or stacks is less than 3, set it to 3
         if slices < 3:
             slices = 3
         if stacks < 3:
             stacks = 3
 
+        # Set the class parameters
         self.radius = radius
         self.slices = slices
         self.stacks = stacks
         self.color = color
         pi = math.pi
 
+        # Calculate the number of vertices and indices based on the number of slices and stacks
         slices_1 = slices + 1
         stacks_1 = stacks + 1
         self.vertices = np.zeros((slices_1 * stacks_1, 11))
         self.indices = np.zeros((slices_1 * stacks_1, 6), dtype=np.uint32)
 
-        for i, phi in enumerate(np.linspace(-pi/2, pi/2, slices_1)):
+        # Loop over the slices and stacks, calculating the x, y, and z coordinates
+        # of each vertex and the corresponding normal vector
+        for i, phi in enumerate(np.linspace(-pi / 2, pi / 2, slices_1)):
             for j, theta in enumerate(np.linspace(-pi, pi, stacks_1)):
                 x = radius * math.cos(phi) * math.cos(theta)
                 y = radius * math.cos(phi) * math.sin(theta)
@@ -94,9 +104,6 @@ class DisplayableSphere(Displayable):
                 nx = math.cos(phi) * math.cos(theta)
                 ny = math.cos(phi) * math.sin(theta)
                 nz = math.sin(phi)
-
-                # sphere_vertices[i][j] = [x, y, z]
-                # sphere_normals[i][j] = [x_normal, y_normal, z_normal]
 
                 # Encoding vertex order using C array order
                 i_by_j = i * stacks_1 + j
@@ -107,24 +114,11 @@ class DisplayableSphere(Displayable):
                 i_by_jp1 = i * stacks_1 + (j + 1) % stacks_1
                 ip1_by_jp1 = (i + 1) % slices_1 * stacks_1 + (j + 1) % stacks_1
 
-                # readjust the order to match CCW.
+                # Set the indices in the correct order for CCW winding
                 self.indices[i_by_j] = [
                     i_by_j, ip1_by_j, i_by_jp1,
                     ip1_by_jp1, ip1_by_j, i_by_jp1]
 
-        # triangle_list = []
-        # for i in range(slices):
-        #     for j in range(stacks):
-        #         i_1 = (i + 1) % (slices + 1)
-        #         j_1 = (j + 1) % (stacks + 1)
-        #         triangle_list.append(np.array([*sphere_vertices[i][j], *sphere_normals[i][j], *color]))
-        #         triangle_list.append(np.array([*sphere_vertices[i][j_1], *sphere_normals[i][j_1], *color]))
-        #         triangle_list.append(np.array([*sphere_vertices[i_1][j_1], *sphere_normals[i_1][j_1], *color]))
-        #
-        #         triangle_list.append(np.array([*sphere_vertices[i][j], *sphere_normals[i][j], *color]))
-        #         triangle_list.append(np.array([*sphere_vertices[i_1][j], *sphere_normals[i_1][j], *color]))
-        #         triangle_list.append(np.array([*sphere_vertices[i_1][j_1], *sphere_normals[i_1][j_1], *color]))
-        # new_vl = np.stack(triangle_list)
         self.indices = self.indices.flatten("C")
 
     def draw(self):

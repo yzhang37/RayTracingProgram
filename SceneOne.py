@@ -26,15 +26,12 @@ from DisplayableCylinder import DisplayableCylinder
 
 
 class SceneOne(Scene, Animation):
-    shaderProg = None
-    glutility = None
-
     lRadius = None
     lAngles = None
     lTransformations = None
 
     def __init__(self, shaderProg):
-        super().__init__()
+        Scene.__init__(self, shaderProg)
         self.shaderProg = shaderProg
         self.glutility = GLUtility.GLUtility()
 
@@ -73,18 +70,30 @@ class SceneOne(Scene, Animation):
         cylinder.rotate(90, torus.uAxis)
         self.addChild(cylinder)
 
+        def turn_on(component):
+            component.renderingRouting = "vertex"
+
+        def turn_off(component):
+            component.renderingRouting = "pure"
+
         l0 = Light(self.lightPos(self.lRadius, self.lAngles[0], self.lTransformations[0]),
                    np.array((*ColorType.SOFTRED, 1.0)))
         lightCube0 = Component(Point((0, 0, 0)), DisplayableCube(shaderProg, 0.1, 0.1, 0.1, ColorType.SOFTRED))
         lightCube0.renderingRouting = "vertex"
+        lightCube0.turn_on = turn_on
+        lightCube0.turn_off = turn_off
         l1 = Light(self.lightPos(self.lRadius, self.lAngles[1], self.lTransformations[1]),
                    np.array((*ColorType.SOFTBLUE, 1.0)))
         lightCube1 = Component(Point((0, 0, 0)), DisplayableCube(shaderProg, 0.1, 0.1, 0.1, ColorType.SOFTBLUE))
         lightCube1.renderingRouting = "vertex"
+        lightCube1.turn_on = turn_on
+        lightCube1.turn_off = turn_off
         l2 = Light(self.lightPos(self.lRadius, self.lAngles[2], self.lTransformations[2]),
                    np.array((*ColorType.SOFTGREEN, 1.0)))
         lightCube2 = Component(Point((0, 0, 0)), DisplayableCube(shaderProg, 0.1, 0.1, 0.1, ColorType.SOFTGREEN))
         lightCube2.renderingRouting = "vertex"
+        lightCube2.turn_on = turn_on
+        lightCube2.turn_off = turn_off
 
         self.addChild(lightCube0)
         self.addChild(lightCube1)
@@ -113,9 +122,3 @@ class SceneOne(Scene, Animation):
         for c in self.children:
             if isinstance(c, Animation):
                 c.animationUpdate()
-
-    def initialize(self):
-        self.shaderProg.clearAllLights()
-        for i, v in enumerate(self.lights):
-            self.shaderProg.setLight(i, v)
-        super().initialize()

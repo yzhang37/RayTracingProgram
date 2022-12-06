@@ -14,6 +14,8 @@ from Point import Point
 
 
 class Light:
+    _enabled = True
+
     position: np.ndarray
     color: np.ndarray
 
@@ -124,3 +126,11 @@ class Light:
             if spotDirection.coords.size != 3:
                 raise TypeError("spotDirection must be a size 3 Point")
             self.spotDirection = spotDirection.coords
+
+    @property
+    def enabled(self) -> bool:
+        return self._enabled
+
+    @enabled.setter
+    def enabled(self, value: bool):
+        self._enabled = value

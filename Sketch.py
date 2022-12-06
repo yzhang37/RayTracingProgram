@@ -8,11 +8,14 @@ First version Created on 09/28/2018
 '''
 import os
 import math
+from typing import List
 
 import numpy as np
 
 import ColorType
 from Animation import Animation
+from SceneFour import SceneFour
+from SceneThree import SceneThree
 from SceneType import Scene
 from ModelAxes import ModelAxes
 from Point import Point
@@ -121,7 +124,7 @@ class Sketch(CanvasBase):
     specularOn: bool = True
 
     # scenes
-    sceneList = [SceneOne, SceneTwo]
+    sceneList = [SceneOne, SceneTwo, SceneThree, SceneFour]
     sceneIndex = 0
 
     def __init__(self, parent):
@@ -170,7 +173,7 @@ class Sketch(CanvasBase):
         self.basisAxes = ModelAxes(self.shaderProg, Point((0, 0, 0)))
         self.basisAxes.initialize()
 
-        self.changeScene(1)
+        self.changeScene(0)
 
         gl.glClearColor(*self.backgroundColor, 1.0)
         gl.glClearDepth(1.0)
@@ -391,33 +394,53 @@ class Sketch(CanvasBase):
         if keycode in [wx.WXK_RETURN]:
             self.update()
         elif keycode in [wx.WXK_LEFT]:
+            # move to the previous scene
             self.changeScene(self.sceneIndex - 1)
-            # self.update()
         elif keycode in [wx.WXK_RIGHT]:
+            # move to the next scene
             self.changeScene(self.sceneIndex + 1)
-            # self.update()
         elif keycode in [wx.WXK_UP]:
+            # move closer to the scene
             self.Interrupt_Scroll(1)
             self.update()
         elif keycode in [wx.WXK_DOWN]:
+            # move further from the scene
             self.Interrupt_Scroll(-1)
             self.update()
         elif chr(keycode) in "rR":
             # reset viewing angle only
             self.resetView()
         elif chr(keycode) in "pP":
+            # toggle pause of the animation
             self.pauseScene = not self.pauseScene
         elif chr(keycode) in "sS":
+            # toggle the specular lighting
             self.specularOn = not self.specularOn
             self.updateLight()
         elif chr(keycode) in "dD":
+            # toggle the diffuse lighting
             self.diffuseOn = not self.diffuseOn
             self.updateLight()
         elif chr(keycode) in "aA":
+            # toggle the ambient lighting
             self.ambientOn = not self.ambientOn
             self.updateLight()
-
-        # TODO 5.3 is at here
+        # check keyCode within '0' to '9', turn on/off the specified light
+        elif 48 <= keycode <= 57:
+            if keycode == 48:
+                id_to_change = 9
+            else:
+                id_to_change = keycode - 49
+            if id_to_change < len(self.scene.lights):
+                light = self.scene.lights[id_to_change]
+                light_cube = self.scene.lightCubes[id_to_change]
+                light.enabled = not light.enabled
+                self.shaderProg.setLight(id_to_change, light)
+                if light.enabled and hasattr(light_cube, 'turn_on'):
+                    light_cube.turn_on(light_cube)
+                elif not light.enabled and hasattr(light_cube, 'turn_off'):
+                    light_cube.turn_off(light_cube)
+                self.update()
 
 
 if __name__ == "__main__":
