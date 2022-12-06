@@ -27,6 +27,14 @@ from DisplayableTorus import DisplayableTorus
 from DisplayableSphere import DisplayableSphere
 
 
+def get_donut(shaderProg, pos=Point((0, 0, 0))) -> Component:
+    donut = Component(pos, DisplayableTorus(
+        shaderProg, 0.3, 0.1, 16, 16, Ct.WHITE))
+    donut.setTexture(shaderProg, "assets/donut.jpg")
+    donut.renderingRouting = "texture"
+    return donut
+
+
 class SceneThree(Scene):
     def __init__(self, shaderProg: GLProgram):
         Scene.__init__(self, shaderProg)
@@ -77,7 +85,30 @@ class SceneThree(Scene):
         table.addChild(plate1)
 
         plate2 = Component(Point((-1.9, (0.5 + 0.05) / 2, 0.3)), DisplayableCylinder(
-            shaderProg, 0.9, 0.9, 0.05, 36, Ct.WHITE))
-        plate2.setDefaultAngle(90, plate2.uAxis)
+            shaderProg, 1, 1, 0.05, 36, Ct.WHITE))
+        plate2.setDefaultAngle(-90, plate2.uAxis)
         plate2.renderingRouting = "vertex"
         table.addChild(plate2)
+
+        pi = np.pi
+        # add twenty donuts
+        # 1st layer
+        donut = get_donut(shaderProg, Point((0, 0, 0.1)))
+        plate2.addChild(donut)
+        for i, theta in enumerate(np.linspace(-pi, pi, 9)):
+            if i == 0:
+                continue
+            donut = get_donut(shaderProg, Point((0.7 * math.cos(theta), 0.7 * math.sin(theta), 0.1)))
+            plate2.addChild(donut)
+        # 2nd layer
+        for i, theta in enumerate(np.linspace(-pi, pi, 8)):
+            if i == 0:
+                continue
+            donut = get_donut(shaderProg, Point((0.55 * math.cos(theta), 0.55 * math.sin(theta), 0.1 + 0.2)))
+            plate2.addChild(donut)
+        # 3rd layer
+        for i, theta in enumerate(np.linspace(-pi, pi, 5)):
+            if i == 0:
+                continue
+            donut = get_donut(shaderProg, Point((0.4 * math.cos(theta), 0.4 * math.sin(theta), 0.1 + 0.2 * 2)))
+            plate2.addChild(donut)
