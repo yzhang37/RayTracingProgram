@@ -37,6 +37,7 @@ def get_donut(shaderProg, pos=Point((0, 0, 0))) -> Component:
         shaderProg, 0.3, 0.1, 16, 16, Ct.WHITE))
     donut.setTexture(shaderProg, "assets/donut.jpg")
     donut.renderingRouting = "lighting_texture"
+    donut.setNormalMap(shaderProg, "assets/donut_norm.png")
     donut.setMaterial(_material_donut)
     return donut
 
@@ -85,8 +86,8 @@ class SceneThree(Scene):
             shaderProg, 6, 0.5, 3, Ct.WHITE,
             False, 2, 2
         ))
-        mat_table = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
-                             np.array((0.4, 0.4, 0.4, 0.1)), 64)
+        mat_table = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.5, 0.5, 0.5, 1)),
+                             np.array((0.1, 0.1, 0.1, 0.1)), 16)
         table.setMaterial(mat_table)
         table.setTexture(shaderProg, "assets/checker_table.png")
         table.renderingRouting = "lighting_texture"
@@ -107,8 +108,8 @@ class SceneThree(Scene):
                 self.addChild(leg)
 
         # two present boxes
-        mat_box = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
-                        np.array((0.4, 0.4, 0.4, 0.1)), 64)
+        mat_box = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.7, 0.7, 0.7, 1)),
+                           np.array((0.9, 0.9, 0.9, 0.1)), 20)
         box1 = Component(Point((2.4, (0.5 + 0.7) / 2, 0.15)), DisplayableCube(
             shaderProg, 0.7, 0.7, 0.7, Ct.WHITE))
         box1.setMaterial(mat_box)
@@ -127,8 +128,8 @@ class SceneThree(Scene):
         table.addChild(box2)
 
         # two plates
-        mat_plate = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
-                             np.array((0.4, 0.4, 0.4, 0.1)), 64)
+        mat_plate = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.65, 0.65, 0.65, 1)),
+                             np.array((0.7, 0.7, 0.7, 0.1)), 16)
         plate1 = Component(Point((0.2, (0.5 + 0.05) / 2, 0)), DisplayableCylinder(
             shaderProg, 0.9, 0.9, 0.05, 36, Ct.WHITE))
         plate1.setMaterial(mat_plate)
@@ -176,17 +177,18 @@ class SceneThree(Scene):
         cake.renderingRouting = "lighting_texture"
         plate1.addChild(cake)
 
-        mat_choco = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
-                            np.array((0.4, 0.4, 0.4, 0.1)), 64)
+        mat_choco = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.5, 0.5, 0.5, 1)),
+                             np.array((0.2, 0.2, 0.2, 0.1)), 16)
         cake_top = Component(Point((0, 0, (0.35 + 0.15) / 2)), DisplayableCylinder(
             shaderProg, 0.67, 0.67, 0.15, 24, Ct.PURPLE))
         cake_top.setMaterial(mat_choco)
         cake_top.setTexture(shaderProg, "assets/chocotop.png")
+        cake_top.setNormalMap(shaderProg, "assets/chocotop_norm.png")
         cake_top.renderingRouting = "lighting_texture"
         cake.addChild(cake_top)
 
         # add candles, using a cylinder
-        l1_pos = Point((0, 1, 0))
+        l1_pos = Point((1.5, 1.2, -0.5))
         l1 = Light(l1_pos, np.array((*Ct.WHITE, 1.0)))
         cl1 = get_candle(shaderProg, l1_pos)
         self.addChild(cl1)
