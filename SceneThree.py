@@ -70,4 +70,14 @@ class SceneThree(Scene):
         table.addChild(box2)
 
         # two plates
+        plate1 = Component(Point((0.2, (0.5 + 0.05) / 2, 0)), DisplayableCylinder(
+            shaderProg, 0.9, 0.9, 0.05, 36, Ct.WHITE))
+        plate1.setDefaultAngle(90, plate1.uAxis)
+        plate1.renderingRouting = "vertex"
+        table.addChild(plate1)
 
+        plate2 = Component(Point((-1.9, (0.5 + 0.05) / 2, 0.3)), DisplayableCylinder(
+            shaderProg, 0.9, 0.9, 0.05, 36, Ct.WHITE))
+        plate2.setDefaultAngle(90, plate2.uAxis)
+        plate2.renderingRouting = "vertex"
+        table.addChild(plate2)
