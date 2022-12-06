@@ -125,15 +125,17 @@ class SceneTwo(Scene):
                 self.addChild(ring)
 
         def turn_on(component):
-            component.renderingRouting = "vertex"
+            component.renderingRouting = "texture"
 
         def turn_off(component):
             component.renderingRouting = "pure"
 
-        l0_pos = Point([-10, 10, 0])
-        l0 = Light(l0_pos, np.array((*Ct.WHITE, 1.0)), np.array((5, 3, 0)))
-        lightCube0 = Component(l0_pos, DisplayableCube(shaderProg, 0.4, 0.1, 2, Ct.WHITE))
-        lightCube0.renderingRouting = "vertex"
+        l0_pos = Point([0, 1, 0])
+        l0 = Light(l0_pos, np.array((*Ct.WHITE, 1.0)), np.array((0, 0, 1)))
+        lightCube0 = Component(l0_pos, DisplayableCube(shaderProg, 2, 0.1, 0.4, Ct.WHITE))
+        lightCube0.setTexture(self.shaderProg, "assets/fluorescent.jpg")
+        lightCube0.renderingRouting = "texture"
+        lightCube0.setDefaultAngle(90, lightCube0.vAxis)
         lightCube0.turn_on = turn_on
         lightCube0.turn_off = turn_off
         self.addChild(lightCube0)
