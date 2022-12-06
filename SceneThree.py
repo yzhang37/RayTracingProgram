@@ -48,10 +48,11 @@ _material_candle = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 
 
 def get_candle(shaderProg,
                pos=Point((0, 0, 0)),
+               line_color: Ct.ColorType = Ct.WHITE,
                candle_texture: Optional[str] = "assets/white_candle.jpg",
                use_texture: bool = True) -> Component:
     candle_line = Component(pos, DisplayableCylinder(
-        shaderProg, 0.01, 0.01, 0.08, 3, Ct.WHITE))
+        shaderProg, 0.01, 0.01, 0.08, 3, line_color))
     candle_line.renderingRouting = "vertex"
     candle_line.setDefaultAngle(-90, candle_line.uAxis)
     candle_base = Component(Point((0, 0, -(0.4 + 0.08) / 2)), DisplayableCylinder(
@@ -65,7 +66,7 @@ def get_candle(shaderProg,
     candle_line.addChild(candle_base)
 
     def turn_on(component):
-        component.displayObj = DisplayableCylinder(shaderProg, 0.01, 0.01, 0.08, 3, Ct.WHITE)
+        component.displayObj = DisplayableCylinder(shaderProg, 0.01, 0.01, 0.08, 3, line_color)
         component.displayObj.initialize()
 
     def turn_off(component):
@@ -128,7 +129,7 @@ class SceneThree(Scene):
         table.addChild(box2)
 
         # two plates
-        mat_plate = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.65, 0.65, 0.65, 1)),
+        mat_plate = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.5, 0.5, 0.5, 1)),
                              np.array((0.7, 0.7, 0.7, 0.1)), 16)
         plate1 = Component(Point((0.2, (0.5 + 0.05) / 2, 0)), DisplayableCylinder(
             shaderProg, 0.9, 0.9, 0.05, 36, Ct.WHITE))
@@ -187,11 +188,18 @@ class SceneThree(Scene):
         cake_top.renderingRouting = "lighting_texture"
         cake.addChild(cake_top)
 
-        # add candles, using a cylinder
-        l1_pos = Point((1.5, 1.2, -0.5))
-        l1 = Light(l1_pos, np.array((*Ct.WHITE, 1.0)))
-        cl1 = get_candle(shaderProg, l1_pos)
-        self.addChild(cl1)
+        self.lights = []
+        self.lightCubes = []
 
-        self.lights = [l1]
-        self.lightCubes = [cl1]
+        lighter_color = Ct.ColorType(255 / 255, 196 / 255, 103 / 255)
+        # add 5 candles
+        r = 0.3
+        for i, theta in enumerate(np.linspace(-pi, pi, 6)):
+            if i == 0:
+                continue
+            l_pos = Point((0.2 + r * math.cos(theta), 0.23, r * math.sin(theta)))
+            candle = get_candle(shaderProg, l_pos, lighter_color)
+            candle_light = Light(l_pos, np.array((*lighter_color, 1.0)))
+            self.lights.append(candle_light)
+            self.lightCubes.append(candle)
+            self.addChild(candle)

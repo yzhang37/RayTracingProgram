@@ -433,8 +433,13 @@ class Sketch(CanvasBase):
                 id_to_change = keycode - 49
             if id_to_change < len(self.scene.lights):
                 light = self.scene.lights[id_to_change]
+                light_cube = self.scene.lightCubes[id_to_change]
                 light.enabled = not light.enabled
                 self.shaderProg.setLight(id_to_change, light)
+                if light.enabled and hasattr(light_cube, 'turn_on'):
+                    light_cube.turn_on(light_cube)
+                elif not light.enabled and hasattr(light_cube, 'turn_off'):
+                    light_cube.turn_off(light_cube)
                 self.update()
 
 
