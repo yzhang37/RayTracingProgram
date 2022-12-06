@@ -6,6 +6,7 @@ First version in 11/08/2021
 :version: 2021.1.1
 """
 import math
+import random
 from typing import Tuple, Optional
 
 import numpy as np
@@ -104,8 +105,8 @@ class SceneThree(Scene):
 
         # four legs of the table, using cylinder
         for i in (-2, 2):
-            for j in (-1, 1):
-                leg = Component(Point((i, -1 - 1.8 / 2, j)), DisplayableCylinder(
+            for j2 in (-1, 1):
+                leg = Component(Point((i, -1 - 1.8 / 2, j2)), DisplayableCylinder(
                     shaderProg, 0.2, 0.2, 1.8, 20, Ct.WHITE
                 ))
                 leg.setMaterial(mat_table)
@@ -135,6 +136,22 @@ class SceneThree(Scene):
 
         table.addChild(box1)
         table.addChild(box2)
+
+        # add some small boxes
+        for i in range(4):
+            j1 = (i % 2)
+            j2 = (i % 2) * 2 - 1
+            small_box = Component(Point((-1.7 + i * 0.4, (0.5 + .3) / 2, -0.95 - j1 * 0.1)), DisplayableCube(
+                shaderProg, .3, .3, .3, Ct.WHITE))
+            small_box.setMaterial(mat_box)
+            small_box.setDefaultAngle(-12 * j2, small_box.vAxis)
+            text, norm = random.choice([("assets/box_a.png", "assets/box_a_norm.png"),
+                                       ("assets/box_b.png", "assets/box_b_norm.png")])
+            small_box.setTexture(shaderProg, text)
+            small_box.setNormalMap(shaderProg, norm)
+            small_box.renderingRouting = "lighting_texture"
+            table.addChild(small_box)
+
 
         # two plates
         mat_plate = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.5, 0.5, 0.5, 1)),
