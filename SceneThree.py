@@ -16,7 +16,7 @@ from DisplayableCylinder import DisplayableCylinder
 from DisplayableEllipsoid import DisplayableEllipsoid
 from GLProgram import GLProgram
 from Quaternion import Quaternion
-from util import vec1_to_vec2, create_flash_light
+from util import vec1_to_vec2, create_flash_light, light_helper
 from SceneType import Scene
 from Component import Component
 from Light import Light
@@ -127,6 +127,7 @@ class SceneThree(Scene):
         box2.setMaterial(mat_box)
         box2.setDefaultAngle(10, box2.vAxis)
         box2.setTexture(shaderProg, "assets/box_a.png")
+        box2.setNormalMap(shaderProg, "assets/box_a_norm.png")
         box2.renderingRouting = "lighting_texture"
 
         table.addChild(box1)
@@ -195,19 +196,6 @@ class SceneThree(Scene):
         self.lights = []
         self.lightCubes = []
 
-        lighter_color = Ct.ColorType(255 / 255, 196 / 255, 103 / 255)
-        # add 5 candles
-        r = 0.3
-        for i, theta in enumerate(np.linspace(-pi, pi, 6)):
-            if i == 0:
-                continue
-            l_pos = Point((0.2 + r * math.cos(theta), 0.23, r * math.sin(theta)))
-            candle = get_candle(shaderProg, l_pos, lighter_color)
-            candle_light = Light(l_pos, np.array((*lighter_color, 1.0)))
-            self.lights.append(candle_light)
-            self.lightCubes.append(candle)
-            self.addChild(candle)
-
         # add flashlight
         v_def = Point((0, 0, 1))
         flashlight_scale = (0.35, 0.35, 0.35)
@@ -227,3 +215,18 @@ class SceneThree(Scene):
                              spotDirection=fl1_direct, **flashlight_settings)
         self.lights.append(flash1_light)
         self.lightCubes.append(flash1_obj)
+
+        lighter_color = Ct.ColorType(255 / 255, 196 / 255, 103 / 255)
+        # add 5 candles
+        r = 0.3
+        for i, theta in enumerate(np.linspace(-pi, pi, 6)):
+            if i == 0:
+                continue
+            l_pos = Point((0.2 + r * math.cos(theta), 0.23, r * math.sin(theta)))
+            candle = get_candle(shaderProg, l_pos, lighter_color)
+            candle_light = Light(l_pos, np.array((*lighter_color, 1.0)))
+            self.lights.append(candle_light)
+            self.lightCubes.append(candle)
+            if i != 3:
+                light_helper(candle_light, candle, False)
+            self.addChild(candle)
