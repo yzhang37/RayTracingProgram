@@ -110,10 +110,18 @@ class SceneTwo(Scene):
             stick.setNormalMap(self.shaderProg, "assets/hardwood_norm.png")
             self.addChild(stick)
 
+        def turn_on(component):
+            component.renderingRouting = "vertex"
+
+        def turn_off(component):
+            component.renderingRouting = "pure"
+
         l0 = Light(Point([0.0, 2, 0.0]),
                    np.array((*ColorType.WHITE, 1.0)))
         lightCube0 = Component(Point((0.0, 2, 0.0)), DisplayableCube(shaderProg, 0.1, 0.1, 0.1, ColorType.WHITE))
         lightCube0.renderingRouting = "vertex"
+        lightCube0.turn_on = turn_on
+        lightCube0.turn_off = turn_off
         self.addChild(lightCube0)
 
         v_def = Point((0, 0, 1))
