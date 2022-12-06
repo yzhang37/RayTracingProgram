@@ -80,10 +80,12 @@ class DisplayableEllipsoid(Displayable):
         #   n_y = sin(u) * sin(v) / r_y
         #   n_z = cos(v) / r_z
 
+        # Store the ellipsoid's radius
         self.radius_x = radius_x
         self.radius_y = radius_y
         self.radius_z = radius_z
 
+        # Make sure slices and stacks have at least 3 values
         if slices < 3:
             slices = 3
         if stacks < 3:
@@ -93,14 +95,18 @@ class DisplayableEllipsoid(Displayable):
         self.color = color
 
         pi = np.pi
+        # slices_1 and stacks_1 need 1 more to ensure generate
+        # correct index sequences using np.linspace
         slices_1 = slices + 1
         stacks_1 = stacks + 1
 
         self.vertices = np.zeros((slices_1 * stacks_1, 11))
         self.indices = np.zeros((slices_1 * stacks_1, 6), dtype=np.uint32)
 
+        # Loop through the ellipsoid's slices and stacks to generate vertices and indices
         for i, phi in enumerate(np.linspace(-pi / 2, pi / 2, slices_1)):
             for j, theta in enumerate(np.linspace(-pi, pi, stacks_1)):
+                # Compute the ellipsoid's coordinates and normal vector
                 vx = np.cos(phi) * np.cos(theta)
                 vy = np.cos(phi) * np.sin(theta)
                 vz = np.sin(phi)
@@ -111,16 +117,19 @@ class DisplayableEllipsoid(Displayable):
                 ny = vy / radius_y
                 nz = vz / radius_z
 
+                # Pre-compute the ellipsoid's texture indices for later
                 i_by_j = i * stacks_1 + j
                 ip1_by_j = (i + 1) % slices_1 * stacks_1 + j
                 i_by_jp1 = i * stacks_1 + (j + 1) % stacks_1
                 ip1_by_jp1 = (i + 1) % slices_1 * stacks_1 + (j + 1) % stacks_1
 
+                # Store the vertex and index information for this slice and stack
                 self.vertices[i_by_j] = [x, y, z, nx, ny, nz, *color, j / stacks, i / slices]
                 self.indices[i_by_j] = [
                     i_by_j, ip1_by_j, i_by_jp1,
                     ip1_by_jp1, ip1_by_j, i_by_jp1]
 
+        # Flatten the index array to make it compatible with GLSL EBO definition.
         self.indices = self.indices.flatten("C")
 
     def draw(self):

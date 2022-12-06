@@ -76,17 +76,20 @@ class DisplayableTorus(Displayable):
         self.generate(innerRadius, outerRadius, nsides, rings, color)
 
     def generate(self, innerRadius=0.25, outerRadius=0.5, nsides=36, rings=36, color=ColorType.SOFTBLUE):
-        # Surface parameter:
+        # The function generates a torus shape by setting its inner and outer radii,
+        # number of sides and rings, and color.
+
+        # The surface parameter of a torus can be represented by the following equations:
         #   x = (a + b * cos(v)) * cos(u)
         #   y = (a + b * cos(v)) * sin(u)
         #   z = b * sin(v)
-        #   where a = (outer + inner) / 2, b = (outer - inner) / 2
+        # where a = (outer + inner) / 2, b = (outer - inner) / 2
 
-        # The normal vector equation:
+        # The normal vector equation of a torus is:
         #   nx = b * cos(u) * cos(v) * (a + b * cos(v))
         #   ny = b * sin(u) * cos(v) * (a + b * cos(v))
         #   nz = b * sin(v) * (a + b * cos(v))
-        # Normalization:
+        # We can simplify and normalize this equation as follows:
         #   nx = sign(b) * cos(u) * cos(v) * sign(a + b * cos(v))
         #   ny = sign(b) * sin(u) * cos(v) * sign(a + b * cos(v))
         #   nz = sign(b) * sin(v) * sign(a + b * cos(v))
@@ -97,6 +100,7 @@ class DisplayableTorus(Displayable):
         # Binding nsides to u, rings to v.
 
         if innerRadius > outerRadius:
+            # Make sure the inner radius is smaller than the outer radius.
             innerRadius, outerRadius = outerRadius, innerRadius
 
         self.innerRadius = innerRadius
@@ -109,11 +113,14 @@ class DisplayableTorus(Displayable):
         b = (outerRadius - innerRadius) / 2
 
         if b == 0:
+            # If the torus has no thickness (b = 0),
+            # set its vertices and indices to empty arrays.
             self.vertices = np.zeros((0, 11))
             self.indices = np.zeros(0)
             return
 
-        # we need to pad one more row for both nsides and rings, to assign correct texture coord to them
+        # We need to pad one extra row for both the number of sides and rings,
+        # to assign the correct texture coordinates to them.
         nsides_1 = nsides + 1
         rings_1 = rings + 1
         self.vertices = np.zeros((nsides_1 * rings_1, 11))

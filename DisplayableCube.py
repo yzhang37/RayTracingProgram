@@ -73,6 +73,11 @@ class DisplayableCube(Displayable):
         hw = width / 2
         hh = height / 2
 
+        # Define the order of the vertices of the 6 edges
+        # as well as the order of the triangles.
+
+        # It must be ensured that the order satisfies the same law
+        # so that the texture direction is the same for each face after the texture is added.
         self.vertices = np.array([
             # back face
             hl, -hw, -hh, 0, 0, -1, *color, 0, 0,
