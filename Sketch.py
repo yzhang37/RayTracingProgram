@@ -8,11 +8,14 @@ First version Created on 09/28/2018
 '''
 import os
 import math
+from typing import List
 
 import numpy as np
 
 import ColorType
 from Animation import Animation
+from SceneFour import SceneFour
+from SceneThree import SceneThree
 from SceneType import Scene
 from ModelAxes import ModelAxes
 from Point import Point
@@ -121,7 +124,7 @@ class Sketch(CanvasBase):
     specularOn: bool = True
 
     # scenes
-    sceneList = [SceneOne, SceneTwo]
+    sceneList = [SceneOne, SceneTwo, SceneThree, SceneFour]
     sceneIndex = 0
 
     def __init__(self, parent):
@@ -170,7 +173,7 @@ class Sketch(CanvasBase):
         self.basisAxes = ModelAxes(self.shaderProg, Point((0, 0, 0)))
         self.basisAxes.initialize()
 
-        self.changeScene(1)
+        self.changeScene(2)
 
         gl.glClearColor(*self.backgroundColor, 1.0)
         gl.glClearDepth(1.0)
