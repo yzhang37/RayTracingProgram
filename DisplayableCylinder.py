@@ -6,7 +6,7 @@ from typing import Optional
 from Displayable import Displayable
 from GLBuffer import VAO, VBO, EBO
 import numpy as np
-import ColorType
+import ColorType as Ct
 import math
 
 try:
@@ -55,7 +55,7 @@ class DisplayableCylinder(Displayable):
                  radius_upper=1.0,
                  height=1.0,
                  nsides=3,
-                 color=ColorType.WHITE):
+                 color=Ct.WHITE):
         super(DisplayableCylinder, self).__init__()
 
         self.shaderProg = shaderProg
@@ -76,7 +76,7 @@ class DisplayableCylinder(Displayable):
                  radius_upper: float,  # The upper radius of the cylinder
                  height: float,  # The height of the cylinder
                  nsides: int,  # The number of sides of the cylinder
-                 color: Optional[ColorType] = None):  # The color of the cylinder (defaults to None)
+                 color: Optional[Ct.ColorType] = None):  # The color of the cylinder (defaults to None)
         # Surface parameter:
         #   x = ((0.5 + u/h) * r_lower + (0.5 - u/h) * r_upper) * cos(theta)
         #   y = ((0.5 + u/h) * r_lower + (0.5 - u/h) * r_upper) * sin(theta)

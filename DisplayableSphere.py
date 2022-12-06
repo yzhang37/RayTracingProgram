@@ -10,7 +10,7 @@ from typing import Optional
 from Displayable import Displayable
 from GLBuffer import VAO, VBO, EBO
 import numpy as np
-import ColorType
+import ColorType as Ct
 import math
 
 try:
@@ -58,7 +58,7 @@ class DisplayableSphere(Displayable):
                  radius=1,
                  slices=30,
                  stacks=30,
-                 color=ColorType.BLUE):
+                 color=Ct.BLUE):
         super(DisplayableSphere, self).__init__()
         self.shaderProg = shaderProg
         self.shaderProg.use()
@@ -73,7 +73,7 @@ class DisplayableSphere(Displayable):
                  radius: float,
                  slices: int,
                  stacks: int,
-                 color: Optional[ColorType] = None):
+                 color: Optional[Ct.ColorType] = None):
         # If the number of slices or stacks is less than 3, set it to 3
         if slices < 3:
             slices = 3
