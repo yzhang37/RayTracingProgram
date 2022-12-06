@@ -16,6 +16,7 @@ from DisplayableCylinder import DisplayableCylinder
 from DisplayableEllipsoid import DisplayableEllipsoid
 from GLProgram import GLProgram
 from Quaternion import Quaternion
+from util import vec1_to_vec2, create_flash_light
 from SceneType import Scene
 from Component import Component
 from Light import Light
@@ -203,3 +204,23 @@ class SceneThree(Scene):
             self.lights.append(candle_light)
             self.lightCubes.append(candle)
             self.addChild(candle)
+
+        # add flashlight
+        v_def = Point((0, 0, 1))
+        flashlight_scale = (0.35, 0.35, 0.35)
+        flashlight_settings = {
+            "spotRadialFactor": np.array((0.05, 0.1, 0.01)),
+            "spotAngleLimit": math.cos(math.pi / 5),
+            "spotExpAttenuation": 16
+        }
+        flash1_obj = create_flash_light(shaderProg)
+        fl1_pos = Point((1.8, -0.55, 1))
+        flash1_obj.setDefaultPosition(fl1_pos)
+        flash1_obj.setDefaultScale(flashlight_scale)
+        fl1_direct = Point((2, 0.15, 1))
+        flash1_obj.setPreRotation(vec1_to_vec2(v_def, fl1_direct))
+        self.addChild(flash1_obj)
+        flash1_light = Light(fl1_pos, np.array((*Ct.WHITE, 1.0)), None,
+                             spotDirection=fl1_direct, **flashlight_settings)
+        self.lights.append(flash1_light)
+        self.lightCubes.append(flash1_obj)
