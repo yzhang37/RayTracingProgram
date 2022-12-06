@@ -74,15 +74,17 @@ def create_flash_light(shaderProg: GLProgram,
                                 DisplayableCylinder(shaderProg, 0.4, 0.5, 0.8, 36, color=lightColor))
     flashlight_core.setDefaultAngle(180, flashlight_core.vAxis)
     flashlight_core.setDefaultAngle(180, flashlight_core.wAxis)
-    flashlight_core.renderingRouting = "vertex"
+    flashlight_core.renderingRouting = "texture"
+    flashlight_core.setTexture(shaderProg, "assets/flashlight.jpg")
     mat_flashshell = Material(np.array((0, 0, 0, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
                               np.array((1, 1, 1, 0.1)), 8)
+    outshell_color = ColorType.getGrayColor(0.7)
     flashlight_front = Component(Point((0, 0, -0.01)),
-                                 DisplayableCylinder(shaderProg, 0.5, 0.7, 0.8, 36, color=ColorType.WHITE))
+                                 DisplayableCylinder(shaderProg, 0.5, 0.7, 0.8, 36, color=outshell_color))
     flashlight_front.renderingRouting = "lighting"
     flashlight_front.setMaterial(mat_flashshell)
     flashlight_body = Component(Point((0, 0, -(2 + 0.8) / 2)),
-                                DisplayableCylinder(shaderProg, 0.35, 0.35, 2, 36, color=ColorType.WHITE))
+                                DisplayableCylinder(shaderProg, 0.35, 0.35, 2, 36, color=outshell_color))
     flashlight_body.renderingRouting = "lighting"
     flashlight_body.setMaterial(mat_flashshell)
     flashlight_front.addChild(flashlight_body)

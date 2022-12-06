@@ -15,6 +15,15 @@ Performance Suggestions:
 """
 
 
+def getGrayColor(value: float) -> 'ColorType':
+    """
+    Get a gray color with a given value
+    :param value: the value of the gray color
+    :return: a gray color
+    """
+    return ColorType(value, value, value)
+
+
 class ColorType:
     """
     A class to manage RGB color
