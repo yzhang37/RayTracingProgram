@@ -249,8 +249,8 @@ class SceneThree(Scene):
         for i, theta in enumerate(np.linspace(-pi, pi, 6)):
             if i == 0:
                 continue
-            l_pos = Point((0.2 + r * math.cos(theta), 0.23, r * math.sin(theta)))
-            candle = get_candle(shaderProg, l_pos, lighter_color)
+            l_pos = Point((0.2 + r * math.cos(theta), 0.1, r * math.sin(theta)))
+            candle = get_candle(shaderProg, l_pos, lighter_color, height=0.23)
             candle_light = Light(l_pos, np.array((*lighter_color, 1.0)))
             self.lights.append(candle_light)
             self.lightCubes.append(candle)
@@ -268,3 +268,18 @@ class SceneThree(Scene):
         self.lights.append(candle_light)
         self.lightCubes.append(red_candle)
         self.addChild(red_candle)
+
+        # add text board
+        board = Component(Point((1.5, (0.5 + 0.7) / 2, 0.1)), DisplayableCube(
+            shaderProg, 0.6, 0.8, 0.04))
+        board.setPreRotation(vec1_to_vec2(
+            Point((0, 0, 1)),
+            Point((3, -1.5, 4))
+        ))
+        mat_hardwood = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((1, 1, 1, 1)),
+                                np.array((0.4, 0.4, 0.4, 0.1)), 32)
+        board.setMaterial(mat_hardwood)
+        board.setTexture(shaderProg, "assets/blackboard.png")
+        board.setNormalMap(shaderProg, "assets/hardwood_norm.png")
+        board.renderingRouting = "texture_lighting"
+        table.addChild(board)
