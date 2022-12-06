@@ -25,6 +25,7 @@ from GLBuffer import VAO, VBO, EBO, Texture
 import GLUtility
 from SceneOne import SceneOne
 from SceneTwo import SceneTwo
+from util import light_helper
 
 try:
     import wx
@@ -140,7 +141,7 @@ class Sketch(CanvasBase):
         self.last_mouse_leftPosition = [0, 0]
         self.last_mouse_middlePosition = [0, 0]
         self.components = []
-        self.backgroundColor = ColorType.BLUEGREEN
+        self.backgroundColor = ColorType.getGrayColor(0.05)
 
         # add components to top level
         self.resetView()
@@ -433,13 +434,8 @@ class Sketch(CanvasBase):
                 id_to_change = keycode - 49
             if id_to_change < len(self.scene.lights):
                 light = self.scene.lights[id_to_change]
-                light_cube = self.scene.lightCubes[id_to_change]
-                light.enabled = not light.enabled
+                light_helper(light, self.scene.lightCubes[id_to_change])
                 self.shaderProg.setLight(id_to_change, light)
-                if light.enabled and hasattr(light_cube, 'turn_on'):
-                    light_cube.turn_on(light_cube)
-                elif not light.enabled and hasattr(light_cube, 'turn_off'):
-                    light_cube.turn_off(light_cube)
                 self.update()
 
 
