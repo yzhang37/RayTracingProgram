@@ -26,15 +26,12 @@ from DisplayableCylinder import DisplayableCylinder
 
 
 class SceneOne(Scene, Animation):
-    shaderProg = None
-    glutility = None
-
     lRadius = None
     lAngles = None
     lTransformations = None
 
     def __init__(self, shaderProg):
-        super().__init__()
+        Scene.__init__(self, shaderProg)
         self.shaderProg = shaderProg
         self.glutility = GLUtility.GLUtility()
 
@@ -113,9 +110,3 @@ class SceneOne(Scene, Animation):
         for c in self.children:
             if isinstance(c, Animation):
                 c.animationUpdate()
-
-    def initialize(self):
-        self.shaderProg.clearAllLights()
-        for i, v in enumerate(self.lights):
-            self.shaderProg.setLight(i, v)
-        super().initialize()

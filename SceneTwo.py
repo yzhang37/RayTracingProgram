@@ -91,13 +91,8 @@ def create_flash_light(shaderProg: GLProgram,
 
 
 class SceneTwo(Scene):
-    shaderProg = None
-    glutility = None
-
     def __init__(self, shaderProg):
-        super().__init__()
-        self.shaderProg = shaderProg
-        self.glutility = GLUtility.GLUtility()
+        super().__init__(shaderProg)
 
         # Add one hardwood floor
         hardwood = Component(Point((0, -1, 0)), DisplayableCube(shaderProg, 7, 0.5, 7))
@@ -185,8 +180,3 @@ class SceneTwo(Scene):
         self.lights = [l0, flash1_light, flash2_light]
         self.lightCubes = [lightCube0, flash1_obj, flash2_obj]
 
-    def initialize(self):
-        self.shaderProg.clearAllLights()
-        for i, v in enumerate(self.lights):
-            self.shaderProg.setLight(i, v)
-        super().initialize()
