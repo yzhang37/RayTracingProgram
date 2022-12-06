@@ -6,12 +6,14 @@ First version in 11/08/2021
 :version: 2021.1.1
 """
 import math
+import random
 
 import numpy as np
 
-import ColorType
+import ColorType as Ct
 from DisplayableCylinder import DisplayableCylinder
 from DisplayableEllipsoid import DisplayableEllipsoid
+from DisplayableTorus import DisplayableTorus
 from SceneType import Scene
 from Component import Component
 from Light import Light
@@ -73,7 +75,7 @@ class SceneTwo(Scene):
 
         # Add one basketball
         basketball = Component(Point((-1.2, 0, -1)),
-                               DisplayableSphere(shaderProg, 0.7, color=ColorType.ColorType(
+                               DisplayableSphere(shaderProg, 0.7, color=Ct.ColorType(
                                    155 / 255, 79 / 255, 44 / 255)))
         mat_basket = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
                               np.array((0.4, 0.4, 0.4, 0.1)), 64)
@@ -85,7 +87,7 @@ class SceneTwo(Scene):
 
         # Add one american football
         american_football = Component(Point((1.2, 0, -1)),
-                                      DisplayableEllipsoid(shaderProg, 0.5, 0.5, 0.9, color=ColorType.ColorType(
+                                      DisplayableEllipsoid(shaderProg, 0.5, 0.5, 0.9, color=Ct.ColorType(
                                           136 / 255, 66 / 255, 30 / 255)))
         mat_american_football = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
                                          np.array((0.4, 0.4, 0.4, 0.1)), 64)
@@ -99,6 +101,10 @@ class SceneTwo(Scene):
 
         mat_stick = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
                              np.array((0.4, 0.4, 0.4, 0.1)), 64)
+        mat_ring = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.3, 0.3, 0.3, 1)),
+                             np.array((0.7, 0.7, 0.7, 0.1)), 64)
+
+        ring_colors = [Ct.BLUE, Ct.RED]
         # three sticks
         for i in np.linspace(-1, 1, 3):
             stick = Component(Point((0 + i * 0.8, -0.3, 1.2)),
@@ -110,15 +116,23 @@ class SceneTwo(Scene):
             stick.setNormalMap(self.shaderProg, "assets/hardwood_norm.png")
             self.addChild(stick)
 
+            for j in np.linspace(0, 2, 3):
+                ring = Component(Point((0 + i * 0.8, -0.6 + j * 0.15, 1.2)),
+                                 DisplayableTorus(shaderProg, 0.2, 0.26, 16, 16, color=random.choice(ring_colors)))
+                ring.setMaterial(mat_ring)
+                ring.setDefaultAngle(90 + random.gauss(0, 10), ring.uAxis)
+                ring.setDefaultAngle(random.gauss(0, 10), ring.vAxis)
+                self.addChild(ring)
+
         def turn_on(component):
             component.renderingRouting = "vertex"
 
         def turn_off(component):
             component.renderingRouting = "pure"
 
-        l0 = Light(Point([0.0, 2, 0.0]),
-                   np.array((*ColorType.WHITE, 1.0)))
-        lightCube0 = Component(Point((0.0, 2, 0.0)), DisplayableCube(shaderProg, 0.1, 0.1, 0.1, ColorType.WHITE))
+        l0_pos = Point([-10, 10, 0])
+        l0 = Light(l0_pos, np.array((*Ct.WHITE, 1.0)), np.array((5, 3, 0)))
+        lightCube0 = Component(l0_pos, DisplayableCube(shaderProg, 0.4, 0.1, 2, Ct.WHITE))
         lightCube0.renderingRouting = "vertex"
         lightCube0.turn_on = turn_on
         lightCube0.turn_off = turn_off
@@ -139,7 +153,7 @@ class SceneTwo(Scene):
         fl1_direct = Point((1, 0.15, 1))
         flash1_obj.setPreRotation(vec1_to_vec2(v_def, fl1_direct))
         self.addChild(flash1_obj)
-        flash1_light = Light(fl1_pos, np.array((*ColorType.WHITE, 1.0)), None,
+        flash1_light = Light(fl1_pos, np.array((*Ct.WHITE, 1.0)), None,
                              spotDirection=fl1_direct, **flashlight_settings)
 
         flash2_obj = create_flash_light(shaderProg)
@@ -149,9 +163,8 @@ class SceneTwo(Scene):
         fl2_direct = Point((-2, 0.15, 1))
         flash2_obj.setPreRotation(vec1_to_vec2(v_def, fl2_direct))
         self.addChild(flash2_obj)
-        flash2_light = Light(fl2_pos, np.array((*ColorType.WHITE, 1.0)), None,
+        flash2_light = Light(fl2_pos, np.array((*Ct.WHITE, 1.0)), None,
                              spotDirection=fl2_direct, **flashlight_settings)
 
         self.lights = [l0, flash1_light, flash2_light]
         self.lightCubes = [lightCube0, flash1_obj, flash2_obj]
-
