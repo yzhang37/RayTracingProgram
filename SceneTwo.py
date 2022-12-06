@@ -22,7 +22,7 @@ from Point import Point
 
 from DisplayableCube import DisplayableCube
 from DisplayableSphere import DisplayableSphere
-from util import vec1_to_vec2, create_flash_light
+from util import vec1_to_vec2, create_flash_light, light_helper
 
 
 ##### 1: Generate Triangle Meshes
@@ -159,14 +159,35 @@ class SceneTwo(Scene):
                              spotDirection=fl1_direct, **flashlight_settings)
 
         flash2_obj = create_flash_light(shaderProg)
-        fl2_pos = Point((-2.2, -0.55, -0.2))
+        fl2_pos = Point((-1.5, -0.55, 2.5))
         flash2_obj.setDefaultPosition(fl2_pos)
         flash2_obj.setDefaultScale(flashlight_scale)
-        fl2_direct = Point((-2, 0.15, 1))
+        fl2_direct = Point((-1, 0.15, 1))
         flash2_obj.setPreRotation(vec1_to_vec2(v_def, fl2_direct))
         self.addChild(flash2_obj)
         flash2_light = Light(fl2_pos, np.array((*Ct.WHITE, 1.0)), None,
                              spotDirection=fl2_direct, **flashlight_settings)
 
-        self.lights = [l0, flash1_light, flash2_light]
-        self.lightCubes = [lightCube0, flash1_obj, flash2_obj]
+        flash3_obj = create_flash_light(shaderProg)
+        fl3_pos = Point((-2.2, -0.55, -0.2))
+        flash3_obj.setDefaultPosition(fl3_pos)
+        flash3_obj.setDefaultScale(flashlight_scale)
+        fl3_direct = Point((-2, 0.15, 1))
+        flash3_obj.setPreRotation(vec1_to_vec2(v_def, fl3_direct))
+        self.addChild(flash3_obj)
+        flash3_light = Light(fl3_pos, np.array((*Ct.WHITE, 1.0)), None,
+                             spotDirection=fl3_direct, **flashlight_settings)
+
+        flash4_obj = create_flash_light(shaderProg)
+        fl4_pos = Point((2.4, -0.55, -2.5))
+        flash4_obj.setDefaultPosition(fl4_pos)
+        flash4_obj.setDefaultScale(flashlight_scale)
+        fl3_direct = Point((0.5, 0.15, -1))
+        flash4_obj.setPreRotation(vec1_to_vec2(v_def, fl3_direct))
+        self.addChild(flash4_obj)
+        flash4_light = Light(fl4_pos, np.array((*Ct.WHITE, 1.0)), None,
+                             spotDirection=fl3_direct, **flashlight_settings)
+
+        self.lights = [l0, flash1_light, flash2_light, flash3_light, flash4_light]
+        self.lightCubes = [lightCube0, flash1_obj, flash2_obj, flash3_obj, flash4_obj]
+        light_helper(l0, lightCube0, False)

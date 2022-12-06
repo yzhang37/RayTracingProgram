@@ -51,6 +51,7 @@ def get_candle(shaderProg,
                pos=Point((0, 0, 0)),
                line_color: Ct.ColorType = Ct.WHITE,
                candle_texture: Optional[str] = "assets/white_candle.jpg",
+               normal_texture: Optional[str] = "assets/white_candle_norm.png",
                use_texture: bool = True) -> Component:
     candle_line = Component(pos, DisplayableCylinder(
         shaderProg, 0.01, 0.01, 0.08, 3, line_color))
@@ -62,6 +63,8 @@ def get_candle(shaderProg,
     if use_texture and candle_texture is not None:
         candle_base.setTexture(shaderProg, candle_texture)
         candle_base.renderingRouting = "lighting_texture"
+        if normal_texture is not None:
+            candle_base.setNormalMap(shaderProg, normal_texture)
     else:
         candle_base.renderingRouting = "lighting"
     candle_line.addChild(candle_base)

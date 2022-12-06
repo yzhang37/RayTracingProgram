@@ -21,5 +21,6 @@ class Scene(Component):
     def initialize(self):
         self.shaderProg.clearAllLights()
         for i, v in enumerate(self.lights):
-            self.shaderProg.setLight(i, v)
+            if v.enabled:
+                self.shaderProg.setLight(i, v)
         super().initialize()

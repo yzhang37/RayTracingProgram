@@ -1,9 +1,12 @@
+from typing import Optional
+
 import numpy as np
 
 import ColorType
 from Component import Component
 from DisplayableCylinder import DisplayableCylinder
 from GLProgram import GLProgram
+from Light import Light
 from Material import Material
 
 from Point import Point
@@ -54,3 +57,14 @@ def create_flash_light(shaderProg: GLProgram,) -> Component:
     flashlight_front.addChild(flashlight_body)
     flashlight_core.addChild(flashlight_front)
     return flashlight_core
+
+
+def light_helper(light: Light, light_cube: Component, enabled: Optional[bool] = None):
+    if enabled is None:
+        light.enabled = not light.enabled
+    else:
+        light.enabled = enabled
+    if light.enabled and hasattr(light_cube, 'turn_on'):
+        light_cube.turn_on(light_cube)
+    elif not light.enabled and hasattr(light_cube, 'turn_off'):
+        light_cube.turn_off(light_cube)
