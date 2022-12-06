@@ -8,11 +8,14 @@ First version Created on 09/28/2018
 '''
 import os
 import math
+from typing import List
 
 import numpy as np
 
 import ColorType
 from Animation import Animation
+from SceneFour import SceneFour
+from SceneThree import SceneThree
 from SceneType import Scene
 from ModelAxes import ModelAxes
 from Point import Point
@@ -121,7 +124,7 @@ class Sketch(CanvasBase):
     specularOn: bool = True
 
     # scenes
-    sceneList = [SceneOne, SceneTwo]
+    sceneList = [SceneOne, SceneTwo, SceneThree, SceneFour]
     sceneIndex = 0
 
     def __init__(self, parent):
@@ -170,7 +173,7 @@ class Sketch(CanvasBase):
         self.basisAxes = ModelAxes(self.shaderProg, Point((0, 0, 0)))
         self.basisAxes.initialize()
 
-        self.changeScene(1)
+        self.changeScene(0)
 
         gl.glClearColor(*self.backgroundColor, 1.0)
         gl.glClearDepth(1.0)
@@ -430,8 +433,13 @@ class Sketch(CanvasBase):
                 id_to_change = keycode - 49
             if id_to_change < len(self.scene.lights):
                 light = self.scene.lights[id_to_change]
+                light_cube = self.scene.lightCubes[id_to_change]
                 light.enabled = not light.enabled
                 self.shaderProg.setLight(id_to_change, light)
+                if light.enabled and hasattr(light_cube, 'turn_on'):
+                    light_cube.turn_on(light_cube)
+                elif not light.enabled and hasattr(light_cube, 'turn_off'):
+                    light_cube.turn_off(light_cube)
                 self.update()
 
 

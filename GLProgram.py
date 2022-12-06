@@ -341,7 +341,7 @@ void main()
     
     // Reserved for rendering with fixed color, routing name is "pure"
     if ((renderingFlag >> 2 & 0x1) == 1){{
-        results[ri] = vec4(0.5, 0.5, 0.5, 1.0);
+        results[ri] = vec4(0, 0, 0, 1.0);
         ri+=1;
     }}
     

@@ -56,7 +56,7 @@ class Component:
 
     # a instance of class which inherit from Displayable
     # if this class is used as skeleton, then keep this empty
-    displayObj = None
+    displayObj: Displayable = None
 
     defaultPos = None  # Point
     currentPos = None  # Point
