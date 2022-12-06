@@ -128,7 +128,7 @@ class SceneTwo(Scene):
             component.renderingRouting = "texture"
 
         def turn_off(component):
-            component.renderingRouting = "pure"
+            component.renderingRouting = "lighting_texture"
 
         l0_pos = Point([0, 1, 0])
         l0 = Light(l0_pos, np.array((*Ct.WHITE, 1.0)), np.array((0, 0, 1)))
@@ -182,12 +182,26 @@ class SceneTwo(Scene):
         fl4_pos = Point((2.4, -0.55, -2.5))
         flash4_obj.setDefaultPosition(fl4_pos)
         flash4_obj.setDefaultScale(flashlight_scale)
-        fl3_direct = Point((0.5, 0.15, -1))
-        flash4_obj.setPreRotation(vec1_to_vec2(v_def, fl3_direct))
+        fl4_direct = Point((0.5, 0, -1))
+        flash4_obj.setPreRotation(vec1_to_vec2(v_def, fl4_direct))
         self.addChild(flash4_obj)
         flash4_light = Light(fl4_pos, np.array((*Ct.WHITE, 1.0)), None,
-                             spotDirection=fl3_direct, **flashlight_settings)
+                             spotDirection=fl4_direct, **flashlight_settings)
 
-        self.lights = [l0, flash1_light, flash2_light, flash3_light, flash4_light]
-        self.lightCubes = [lightCube0, flash1_obj, flash2_obj, flash3_obj, flash4_obj]
+        flash5_obj = create_flash_light(shaderProg)
+        fl5_pos = Point((1.3, 0.5, -0.2))
+        flash5_obj.setDefaultPosition(fl5_pos)
+        flash5_obj.setDefaultScale(flashlight_scale)
+        fl5_direct = Point((0.980581, -0.196116, 0))
+        flash5_obj.setPreRotation(vec1_to_vec2(v_def, fl5_direct))
+        self.addChild(flash5_obj)
+        flash5_light = Light(fl5_pos, np.array((*Ct.WHITE, 1.0)), None,
+                             spotDirection=fl5_direct, **flashlight_settings)
+
+        self.lights = [l0, flash1_light, flash2_light, flash3_light, flash4_light, flash5_light]
+        self.lightCubes = [lightCube0, flash1_obj, flash2_obj, flash3_obj, flash4_obj, flash5_obj]
         light_helper(l0, lightCube0, False)
+        light_helper(flash1_light, flash1_obj, False)
+        light_helper(flash2_light, flash2_obj, False)
+        light_helper(flash3_light, flash3_obj, False)
+        light_helper(flash4_light, flash4_obj, False)
