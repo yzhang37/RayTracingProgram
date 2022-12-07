@@ -26,7 +26,7 @@ import GLUtility
 from DisplayableCube import DisplayableCube
 from DisplayableTorus import DisplayableTorus
 from DisplayableSphere import DisplayableSphere
-from util import light_helper
+from util import light_helper, create_flash_light, vec1_to_vec2
 
 
 # function that generates a random angle value in the range [-90.0, 90.0].
@@ -83,7 +83,6 @@ class SceneFour(Scene):
                 ))
                 ball_count += 1
                 filename = f"assets/billiard_{ball_count:02d}.png"
-                print(filename)
                 ball.setTexture(shaderProg, filename)
                 ball.renderingRouting = "lighting_texture"
                 ball.setMaterial(mat_ball)
@@ -113,8 +112,6 @@ class SceneFour(Scene):
                              np.array((0.4, 0.4, 0.4, 0.1)), 64)
         frame.setMaterial(mat_frame)
         table.addChild(frame)
-
-        # add the cue
 
         def turn_on(component):
             component.renderingRouting = "texture"
@@ -151,3 +148,29 @@ class SceneFour(Scene):
         self.addChild(fluo1_obj)
 
         light_helper(fluo0_light, fluo0_obj, False)
+
+        # add four flashlight around the table
+        c_x = 0
+        c_y = -0.55
+        c_z = 0
+        offset = 5
+        v_def = Point((0, 0, 1))
+        flashlight_scale = (0.35, 0.35, 0.35)
+        flashlight_settings = {
+            "spotRadialFactor": np.array((0.05, 0.1, 0.01)),
+            "spotAngleLimit": math.cos(math.pi / 5),
+            "spotExpAttenuation": 16
+        }
+        for pa in (-0.5, 0.5):
+            for pb in (-0.5, 0.5):
+                flash_obj = create_flash_light(shaderProg)
+                flash_pos = Point((c_x + offset * pa, c_y, c_z + offset * pb))
+                flash_obj.setDefaultPosition(flash_pos)
+                flash_obj.setDefaultScale(flashlight_scale)
+                fl1_direct = Point((pa * 2, 0.15, pb * 2))
+                flash_obj.setPreRotation(vec1_to_vec2(v_def, fl1_direct))
+                self.addChild(flash_obj)
+                flash1_light = Light(flash_pos, np.array((*Ct.WHITE, 1.0)), None,
+                                     spotDirection=fl1_direct, **flashlight_settings)
+                self.lights.append(flash1_light)
+                self.lightCubes.append(flash_obj)
