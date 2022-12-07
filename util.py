@@ -4,6 +4,7 @@ import numpy as np
 
 import ColorType
 from Component import Component
+from DisplayableCube import DisplayableCube
 from DisplayableCylinder import DisplayableCylinder
 from GLProgram import GLProgram
 from Light import Light
@@ -56,6 +57,16 @@ def create_flash_light(shaderProg: GLProgram,) -> Component:
     flashlight_body.setMaterial(mat_flashshell)
     flashlight_front.addChild(flashlight_body)
     flashlight_core.addChild(flashlight_front)
+
+    # a red cube button
+    mat_button = Material(np.array((0.05, 0.05, 0.05, 0.1)), np.array((0.5, 0.5, 0.5, 1)),
+                          np.array((0.6, 0.6, 0.6, 0.1)), 8)
+    button = Component(Point((0, -(0.35 + 0.2) / 2, 0.5)), DisplayableCube(
+        shaderProg, 0.1, 0.2, 0.2, color=ColorType.RED))
+    button.setMaterial(mat_button)
+    button.renderingRouting = "lighting"
+    flashlight_body.addChild(button)
+
     return flashlight_core
 
 
