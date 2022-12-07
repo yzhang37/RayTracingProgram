@@ -6,6 +6,7 @@ First version in 11/08/2021
 :version: 2021.1.1
 """
 import math
+import random
 
 import numpy as np
 
@@ -25,6 +26,20 @@ import GLUtility
 from DisplayableCube import DisplayableCube
 from DisplayableTorus import DisplayableTorus
 from DisplayableSphere import DisplayableSphere
+
+
+# function that generates a random angle value in the range [-90.0, 90.0].
+def get_random_degree() -> float:
+    return random.random() * 180.0 - 90.0
+
+
+# sets a random rotation for the given component object along the x, y, and z axes.
+# The function takes the component object, as well as the x, y, and z rotation values,
+# and applies a random offset to each of these values using get_random_degree()
+def set_random_rotation(component: Component, x, y, z):
+    component.setDefaultAngle(x + 0.6 * get_random_degree(), component.uAxis)
+    component.setDefaultAngle(y + 0.6 * get_random_degree(), component.vAxis)
+    component.setDefaultAngle(z + 0.6 * get_random_degree(), component.wAxis)
 
 
 class SceneFour(Scene):
@@ -61,7 +76,7 @@ class SceneFour(Scene):
                 print(filename)
                 ball.setTexture(shaderProg, filename)
                 ball.renderingRouting = "lighting_texture"
-                ball.setDefaultAngle(-90, ball.vAxis)
+                set_random_rotation(ball, 0, -90, 0)
                 table.addChild(ball)
         # add #0 ball
         ball = Component(Point((c_x - 2.5, c_y + 0.5 / 2 + ball_radius, c_z)), DisplayableSphere(
@@ -69,9 +84,8 @@ class SceneFour(Scene):
         ))
         ball.setTexture(shaderProg, f"assets/billiard_00.png")
         ball.renderingRouting = "lighting_texture"
-        ball.setDefaultAngle(-90, ball.vAxis)
+        set_random_rotation(ball, 0, -90, 0)
         table.addChild(ball)
-
 
         # add the frame of the balls, it's radius should be 2/3 * height
         inner = height * 2/3 + ball_radius * 2
