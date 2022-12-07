@@ -41,7 +41,7 @@ class SceneFour(Scene):
         table.renderingRouting = "lighting_texture"
         self.addChild(table)
 
-        c_x = 0
+        c_x = 1.35
         c_y = 0
         c_z = 0
         # add balls 1 - 15
@@ -63,6 +63,15 @@ class SceneFour(Scene):
                 ball.renderingRouting = "lighting_texture"
                 ball.setDefaultAngle(-90, ball.vAxis)
                 table.addChild(ball)
+        # add #0 ball
+        ball = Component(Point((c_x - 2.5, c_y + 0.5 / 2 + ball_radius, c_z)), DisplayableSphere(
+            shaderProg, ball_radius, 16, 16, ColorType.WHITE
+        ))
+        ball.setTexture(shaderProg, f"assets/billiard_00.png")
+        ball.renderingRouting = "lighting_texture"
+        ball.setDefaultAngle(-90, ball.vAxis)
+        table.addChild(ball)
+
 
         # add the frame of the balls, it's radius should be 2/3 * height
         inner = height * 2/3 + ball_radius * 2
