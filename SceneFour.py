@@ -26,6 +26,7 @@ import GLUtility
 from DisplayableCube import DisplayableCube
 from DisplayableTorus import DisplayableTorus
 from DisplayableSphere import DisplayableSphere
+from util import light_helper
 
 
 # function that generates a random angle value in the range [-90.0, 90.0].
@@ -48,6 +49,8 @@ class SceneFour(Scene):
         self.lights.clear()
         self.lightCubes.clear()
 
+        mat_table = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.5, 0.5, 0.5, 1)),
+                             np.array((0.1, 0.1, 0.1, 0.1)), 16)
         # add the pool table
         table = Component(Point((0, -1, 0)), DisplayableCube(
             shaderProg, 7, 0.5, 7, Ct.SEAGREEN,
@@ -56,6 +59,7 @@ class SceneFour(Scene):
         table.setTexture(shaderProg, "assets/pool.png")
         table.setNormalMap(shaderProg, "assets/pool_norm.png")
         table.renderingRouting = "lighting_texture"
+        table.setMaterial(mat_table)
         self.addChild(table)
 
         # material for the ball
@@ -105,6 +109,9 @@ class SceneFour(Scene):
         frame.renderingRouting = "texture_lighting"
         frame.setTexture(shaderProg, "assets/hardwood.png")
         frame.setNormalMap(shaderProg, "assets/hardwood_norm.png")
+        mat_frame = Material(np.array((0.1, 0.1, 0.1, 0.1)), np.array((0.4, 0.4, 0.4, 1)),
+                             np.array((0.4, 0.4, 0.4, 0.1)), 64)
+        frame.setMaterial(mat_frame)
         table.addChild(frame)
 
         # add the cue
@@ -142,3 +149,5 @@ class SceneFour(Scene):
         self.lights.append(fluo1_light)
         self.lightCubes.append(fluo1_obj)
         self.addChild(fluo1_obj)
+
+        light_helper(fluo0_light, fluo0_obj, False)
