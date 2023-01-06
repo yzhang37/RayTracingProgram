@@ -24,9 +24,9 @@ In addition to the basic functions, I have made several particularly beautiful a
 
     ![](image/scene3.gif)
 
-*   **Scene 4:** A pool table with a normal map, several balls, and a ball rack. There are also two lighting fixtures (one wireless light and one point light), and several spotlights.
+*   **Scene 4:** This is a finely crafted scene featuring a pool table with a smooth, comfortable texture and an orderly pattern of stripes. A series of pool balls and a rack are placed on the table. Four flashlight beams illuminate the center of the table and two fluorescent lamps are used for lighting. In this scene, I used a normal map to achieve the feel of the fabric on the pool table. The fluorescent lamps use an infinite light and the flashlight beams use a spotlight effect.
 
-    ![](image/scene4.gif)
+    https://user-images.githubusercontent.com/17313035/211105179-6839973b-d054-4b16-8123-666d354238b8.mp4
 
 ## 2. How to use?
 
