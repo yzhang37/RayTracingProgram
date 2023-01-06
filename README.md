@@ -12,19 +12,19 @@ In this assignment, I used the OpenGL Shading Language (GLSL) to write my own ve
 
 In addition to the basic functions, I have made several particularly beautiful and fancy scenes, as follows
 
-*   **Scene 1: ** An earth globe with a normal map, a marble ring with a normal map, and a highlighted cone.
+*   **Scene 1:** An earth globe with a normal map, a marble ring with a normal map, and a highlighted cone.
 
     ![](image/scene1.gif)
 
-*   **Scene 2: **A scene similar to Phasmophobia, with a wooden floor (with a normal map), several flashlights, a basketball (with a normal map), an American football (with a normal map), and several ropes loops.
+*   **Scene 2:** A scene similar to Phasmophobia, with a wooden floor (with a normal map), several flashlights, a basketball (with a normal map), an American football (with a normal map), and several ropes loops.
 
     ![](image/scene2.gif)
 
-*   **Scene 3: **A beautiful Christmas table with lots of delicious donuts, cakes, and gift boxes. Using very rich lighting effects.
+*   **Scene 3:** A beautiful Christmas table with lots of delicious donuts, cakes, and gift boxes. Using very rich lighting effects.
 
     ![](image/scene3.gif)
 
-*   **Scene 4: **A pool table with a normal map, several balls, and a ball rack. There are also two lighting fixtures (one wireless light and one point light), and several spotlights.
+*   **Scene 4:** A pool table with a normal map, several balls, and a ball rack. There are also two lighting fixtures (one wireless light and one point light), and several spotlights.
 
     ![](image/scene4.gif)
 
@@ -40,7 +40,7 @@ In addition to the basic functions, I have made several particularly beautiful a
 
 *   Use the left and right arrow keys to switch scenes
 
-## 3. 完成的内容：
+## 3. Features Included
 
 | Requirements                                                           | Done |
 | ---------------------------------------------------------------------- | ---- |
