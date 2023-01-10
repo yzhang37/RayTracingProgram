@@ -22,11 +22,11 @@ The following are the four scenarios of this program:
 
 *   **Scene 1:** This scene is a testing scene, primarily used to ensure that the VBO/EBO implementation of this program is functioning correctly. It includes an 🌏 earth (sphere shape), a ring ashtray (torus shape), and a half cone, all with metallic surface applied. There are also three point lights present in the scene, colored blue, red, and yellow, that are flying around.
 
-    ![](image/scene1.gif)
+    https://user-images.githubusercontent.com/17313035/211599858-4d0741f7-3ceb-4bdd-bab9-2c8b53d556cd.mp4
 
 *   **Scene 2:** The second scene is similar to the high school map in the game [Phasmophobia](https://web.archive.org/web/20230109084122/https://kineticgames.co.uk/). It features a wooden floor of a basketball court, on which there is a 🏀basketball (sphere model), an 🏈 American football (ellipsoid model), several rings (randomly colored red or blue, torus model for the ring, cylinder model for the stick). In order to create a horror-like atmosphere, I intentionally made the environment dark and added several 🔦 flashlights, to create a atmosphere of dimness.
 
-    ![](image/scene2.gif)
+    https://user-images.githubusercontent.com/17313035/211599902-72e0fd42-580d-4fa1-babd-d02e1e113610.mp4
 
 *   **Scene 3:** A beautiful Christmas table with lots of delicious donuts, cakes, and gift boxes. Using very rich lighting effects.
 
