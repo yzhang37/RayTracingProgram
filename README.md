@@ -2,7 +2,21 @@
 
 ## Introduction
 
-To begin, I utilized five different surface shapes such as spheres, ellipsoids, rectangles, cones (cylinders), and toroids (donut shapes). I wrote my own code for creating the surface mesh and defining the vertex buffer and index buffer. I then implemented various rendering techniques, including basic rendering, diffuse reflection, specular reflection, ambient lighting, texture mapping, and normal mapping. I also distinguished between point lighting, directional lighting, and spotlight effects. Ultimately, I produced several stunning scenes.
+To begin, I utilized five different surface shapes such as spheres, ellipsoids, rectangles, cones (cylinders), and torus (donut shapes). I wrote my own code for creating the surface mesh and defining the vertex buffer and index buffer. I then implemented various rendering techniques, including basic rendering, diffuse reflection, specular reflection, ambient lighting, texture mapping, and normal mapping. I also distinguished between point lighting, directional lighting, and spotlight effects. Ultimately, I produced several stunning scenes.
+
+The following are the four scenarios of this program:
+
+![Scene Introduction](image/scene_intro.gif)
+
+## Usage
+
+| Keys                      | Functions                                                    |
+| ------------------------- | ------------------------------------------------------------ |
+| Numeric keys (`1` to `9`) | Toggle the light switches in the scene (if the corresponding number exists) |
+| `A`                       | Turn on/off the ambient rendering mode.                      |
+| `S`                       | Turn on/off the specular rendering mode.                     |
+| `D`                       | Turn on/off the diffuse rendering mode.                      |
+| `←` / `→`                 | Switch scenes.                                               |
 
 ## Scene design
 
@@ -21,18 +35,6 @@ To begin, I utilized five different surface shapes such as spheres, ellipsoids, 
 *   **Scene 4:** This is a finely crafted scene featuring a pool table with a smooth, comfortable texture and an orderly pattern of stripes. A series of pool balls and a rack are placed on the table. Four flashlight beams illuminate the center of the table and two fluorescent lamps are used for lighting. In this scene, I used a normal map to achieve the feel of the fabric on the pool table. The fluorescent lamps use an infinite light and the flashlight beams use a spotlight effect.
 
     https://user-images.githubusercontent.com/17313035/211105179-6839973b-d054-4b16-8123-666d354238b8.mp4
-
-## How to use?
-
-*   Press `1` through `9` to toggle the light switches in the scene (if the corresponding number exists)
-
-*   Press `A` to turn on/off the ambient light
-
-*   Press `S` to turn on/off the specular light
-
-*   Press `D` to turn on/off the diffuse light
-
-*   Use the left and right arrow keys to switch scenes
 
 ## Features Included
 
