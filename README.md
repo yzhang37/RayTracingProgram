@@ -1,34 +1,28 @@
-# CS680 Lighting Shader Program
+# Lighting Shader Program with PyOpenGL
 
-Student Name: **Zhenghang Yin**
+## Introduction
 
-Student ID: **U82871437**
+To begin, I utilized five different surface shapes such as spheres, ellipsoids, rectangles, cones (cylinders), and toroids (donut shapes). I wrote my own code for creating the surface mesh and defining the vertex buffer and index buffer. I then implemented various rendering techniques, including basic rendering, diffuse reflection, specular reflection, ambient lighting, texture mapping, and normal mapping. I also distinguished between point lighting, directional lighting, and spotlight effects. Ultimately, I produced several stunning scenes.
 
-***
+## Scene design
 
-## 1. Introduction
-
-In this assignment, I used the OpenGL Shading Language (GLSL) to write my own vertex and fragment shaders to compute illumination and shading for meshes. I generated triangle meshes using the Element Buffer Object (EBO) and created displayable classes for an ellipsoid, torus, and cylinder with end caps. I also implemented normal rendering, illumination equations for diffuse, specular, and ambient light, and set up lights for point, infinite, and spotlight sources. In addition, I created multiple scenes featuring different objects and light configurations, and implemented texture and normal mapping as optional bonus tasks.
-
-In addition to the basic functions, I have made several particularly beautiful and fancy scenes, as follows
-
-*   **Scene 1: ** An earth globe with a normal map, a marble ring with a normal map, and a highlighted cone.
+*   **Scene 1:** An earth globe with a normal map, a marble ring with a normal map, and a highlighted cone.
 
     ![](image/scene1.gif)
 
-*   **Scene 2: **A scene similar to Phasmophobia, with a wooden floor (with a normal map), several flashlights, a basketball (with a normal map), an American football (with a normal map), and several ropes loops.
+*   **Scene 2:** A scene similar to Phasmophobia, with a wooden floor (with a normal map), several flashlights, a basketball (with a normal map), an American football (with a normal map), and several ropes loops.
 
     ![](image/scene2.gif)
 
-*   **Scene 3: **A beautiful Christmas table with lots of delicious donuts, cakes, and gift boxes. Using very rich lighting effects.
+*   **Scene 3:** A beautiful Christmas table with lots of delicious donuts, cakes, and gift boxes. Using very rich lighting effects.
 
     ![](image/scene3.gif)
 
-*   **Scene 4: **A pool table with a normal map, several balls, and a ball rack. There are also two lighting fixtures (one wireless light and one point light), and several spotlights.
+*   **Scene 4:** This is a finely crafted scene featuring a pool table with a smooth, comfortable texture and an orderly pattern of stripes. A series of pool balls and a rack are placed on the table. Four flashlight beams illuminate the center of the table and two fluorescent lamps are used for lighting. In this scene, I used a normal map to achieve the feel of the fabric on the pool table. The fluorescent lamps use an infinite light and the flashlight beams use a spotlight effect.
 
-    ![](image/scene4.gif)
+    https://user-images.githubusercontent.com/17313035/211105179-6839973b-d054-4b16-8123-666d354238b8.mp4
 
-## 2. How to use?
+## How to use?
 
 *   Press `1` through `9` to toggle the light switches in the scene (if the corresponding number exists)
 
@@ -40,7 +34,7 @@ In addition to the basic functions, I have made several particularly beautiful a
 
 *   Use the left and right arrow keys to switch scenes
 
-## 3. 完成的内容：
+## Features Included
 
 | Requirements                                                           | Done |
 | ---------------------------------------------------------------------- | ---- |
