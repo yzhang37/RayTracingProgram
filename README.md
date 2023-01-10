@@ -20,11 +20,11 @@ The following are the four scenarios of this program:
 
 ## Scene design
 
-*   **Scene 1:** An earth globe with a normal map, a marble ring with a normal map, and a highlighted cone.
+*   **Scene 1:** This scene is a testing scene, primarily used to ensure that the VBO/EBO implementation of this program is functioning correctly. It includes an 🌏 earth (sphere shape), a ring ashtray (torus shape), and a half cone, all with metallic surface applied. There are also three point lights present in the scene, colored blue, red, and yellow, that are flying around.
 
     ![](image/scene1.gif)
 
-*   **Scene 2:** A scene similar to Phasmophobia, with a wooden floor (with a normal map), several flashlights, a basketball (with a normal map), an American football (with a normal map), and several ropes loops.
+*   **Scene 2:** The second scene is similar to the high school map in the game [Phasmophobia](https://web.archive.org/web/20230109084122/https://kineticgames.co.uk/). It features a wooden floor of a basketball court, on which there is a 🏀basketball (sphere model), an 🏈 American football (ellipsoid model), several rings (randomly colored red or blue, torus model for the ring, cylinder model for the stick). In order to create a horror-like atmosphere, I intentionally made the environment dark and added several 🔦 flashlights, to create a atmosphere of dimness.
 
     ![](image/scene2.gif)
 
