@@ -30,7 +30,7 @@ The following are the four scenarios of this program:
 
 *   **Scene 3:** A beautiful Christmas table with lots of delicious donuts, cakes, and gift boxes. Using very rich lighting effects.
 
-    ![](image/scene3.gif)
+    https://user-images.githubusercontent.com/17313035/211606642-e3cca8b8-35ef-41da-b7c1-6c181b02040a.mp4
 
 *   **Scene 4:** This is a finely crafted scene featuring a pool table with a smooth, comfortable texture and an orderly pattern of stripes. A series of pool balls and a rack are placed on the table. Four flashlight beams illuminate the center of the table and two fluorescent lamps are used for lighting. In this scene, I used a normal map to achieve the feel of the fabric on the pool table. The fluorescent lamps use an infinite light and the flashlight beams use a spotlight effect.
 
