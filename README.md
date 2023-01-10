@@ -112,10 +112,13 @@ $$-->
    - On the bottom surface is: $\vec{n}=[0, 0, -1]$
 
    - On the edges is:
-     $$
+     <!--$$
      \newcommand{\csin}{{\mathbf{cSin}}}
      \vec{n}=[\cos(\theta) · \sqrt{1 - \csin^2}, \sin(\theta) · \sqrt{1 - \csin^2}, \csin]
-     $$
+     $$-->
+     
+     ![](image/cylinder_norm.svg)
+     
      where, $\mathbf{cSin} = (r_{\mathrm{lower}} - r_{\mathrm{upper}}) / h$.
      
 
@@ -124,7 +127,8 @@ $$-->
 4. Torus Model
 
    Torus surface parameter equation:
-   $$
+   
+   <!--$$
    \left \{
    \begin{aligned}
    x &= (a + b \cdot \cos(\phi)) \cdot \cos (\theta) \\
@@ -134,12 +138,15 @@ $$-->
    \right.,
    \phi \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right),
    \theta \in \left[-\pi, \pi\right),
-   $$
+   $$-->
+   
+   ![](image/torus_eqn.svg)
+   
    where `a = (outer + inner) / 2`, `b = (outer - inner) / 2`.
 
    Torus surface normal equation:
 
-   $$
+   <!--$$
    \left \{
    \begin{aligned}
    nx &= b · \cos(\theta) · \cos(\phi) · (a + b · \cos(\phi)) \\
@@ -148,12 +155,14 @@ $$-->
    \end{aligned}
    \right.,
    \phi \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right),
-   \theta \in \left[-\pi, \pi\right),
-   $$
+   \theta \in \left[-\pi, \pi\right)
+   $$-->
+   
+   ![](image/torus_norm.svg)
 
    After normalization it is:
 
-   $$
+   <!--$$
    \DeclareMathOperator{\sign}{sign}
    \DeclareMathOperator{\pat}{pat}
    \left \{
@@ -165,8 +174,10 @@ $$-->
    \end{aligned}
    \right.,
    \phi \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right),
-   \theta \in \left[-\pi, \pi\right),
-   $$
+   \theta \in \left[-\pi, \pi\right)
+   $$-->
+   
+   ![](image/torus_norm2.svg)
 
    Texture mapping position: Each point `[i/nsides, j / rings]`. Where `i/nsides` represents the iteration of $\theta$ and `j / rings` represents the iteration of $\phi$. See [DisplayableTorus.py](https://chat.openai.com/DisplayableTorus.py) for specific definitions.
 
