@@ -44,7 +44,9 @@ The following models are used in this program:
 
    Sphere surface parameter equation, where $r$ represents the radius of the sphere.
 
-   $$
+   ![sphere_eqn](image/sphere_eqn.svg)
+   
+   <!--$$
    \left \{
    \begin{aligned}
    x &= r \cdot \cos(\phi) \cdot \cos (\theta) \\
@@ -54,11 +56,14 @@ The following models are used in this program:
    \right.,
    \phi \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right),
    \theta \in \left[-\pi, \pi\right),
-   $$
+   $$-->
 
    Normal equation:
 
-   $$
+   ![sphere_norm](image/sphere_norm.svg)
+   
+
+<!--$$
    \left \{
    \begin{aligned}
    nx &= \cos(\phi) \cdot \cos (\theta) \\
@@ -68,7 +73,7 @@ The following models are used in this program:
    \right.,
    \phi \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right),
    \theta \in \left[-\pi, \pi\right),
-   $$
+$$-->
 
    Texture mapping position: Each point `[j/stacks, i/slices]`. Where `j/stacks` represents the iteration of $\theta$ and `i/slices` represents the iteration of $\phi$. See [DisplayableSphere.py](DisplayableSphere.py) for specific definitions.
 
@@ -82,7 +87,7 @@ The following models are used in this program:
 
    Surface parameter equation:
 
-   $$
+   <!--$$
    \newcommand{\low}{{r_{\mathrm{lower}}}}
    \newcommand{\upp}{{r_{\mathrm{upper}}}}
    \left \{
@@ -94,7 +99,9 @@ The following models are used in this program:
    \theta &\in \left[-\pi, \pi\right)
    \end{aligned}
    \right.
-   $$
+   $$-->
+   
+   ![](image/cylinder_eqn.svg)
 
    where $r_{\mathrm{lower}}$ represents the lower radius of the cone, $r_{\mathrm{upper}}$ represents the upper radius of the cone. If the two radii are the same, it represents a cylinder. $h$ is the height.
 
