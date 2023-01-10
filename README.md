@@ -38,11 +38,12 @@ The following are the four scenarios of this program:
 
 ## Model Design
 
-本程序中使用了以下的模型：
+The following models are used in this program:
 
-1. 球体模型/椭球模型
+1. Sphere/Ellipsoid Model
 
-   球体曲面参数方程，其中 $r$ 表示球体半径。
+   Sphere surface parameter equation, where $r$ represents the radius of the sphere.
+
    $$
    \left \{
    \begin{aligned}
@@ -55,7 +56,8 @@ The following are the four scenarios of this program:
    \theta \in \left[-\pi, \pi\right),
    $$
 
-   法线方程:
+   Normal equation:
+
    $$
    \left \{
    \begin{aligned}
@@ -68,17 +70,18 @@ The following are the four scenarios of this program:
    \theta \in \left[-\pi, \pi\right),
    $$
 
-   贴图位置：每个点 `[j/stacks, i/slices]`. 其中 `j/stacks` 表示 $\theta$ 的迭代,`i/slices`表示 $\phi$ 的迭代。具体定义见 [DisplayableSphere.py](DisplayableSphere.py).
+   Texture mapping position: Each point `[j/stacks, i/slices]`. Where `j/stacks` represents the iteration of $\theta$ and `i/slices` represents the iteration of $\phi$. See [DisplayableSphere.py](DisplayableSphere.py) for specific definitions.
 
-   椭球模型和球体模型的参数非常相似，唯一的区别是将$r$换成了$a$, $b$, $c$，表示椭球三个不同的半径。具体定义见 [DisplayableEllipsoid.py](DisplayableEllipsoid.py).
+   The parameters of the ellipsoid model are very similar to those of the sphere model, with the only difference being that $r$ is replaced with $a$, $b$, and $c$, which represent the three different radius of the ellipsoid. See [DisplayableEllipsoid.py](DisplayableEllipsoid.py) for specific definitions.
 
-3. 方体模型
+2. Cube Model
 
-   正方体模型一共8个点，面对不同的面有不同的法向量，均需要手动定义。具体 VBO/EBO 定义请参见[DisplayableCube.py](DisplayableCube.py), 此处不再赘述。
+   The cube model has a total of 8 points, and different faces have different normals, all of which need to be defined manually. Please refer to [DisplayableCube.py](DisplayableCube.py) for specific VBO/EBO definitions, as they will not be explained here.
 
-3. 圆柱体/圆锥体模型
+3. Cylinder/Cone Model
 
-   曲面参数方程:
+   Surface parameter equation:
+
    $$
    \newcommand{\low}{{r_{\mathrm{lower}}}}
    \newcommand{\upp}{{r_{\mathrm{upper}}}}
@@ -92,26 +95,28 @@ The following are the four scenarios of this program:
    \end{aligned}
    \right.
    $$
-   其中, $r_{\mathrm{lower}}$ 表示圆锥体的下半径，$r_{\mathrm{upper}}$ 表示圆锥体的上半径。如果两个半径一致，则表现为一个圆柱体。$h$ 是高度。
 
-   法线方程：
+   where $r_{\mathrm{lower}}$ represents the lower radius of the cone, $r_{\mathrm{upper}}$ represents the upper radius of the cone. If the two radii are the same, it represents a cylinder. $h$ is the height.
 
-   - 在上表面是：$\vec{n}=[0, 0, 1]$
+   Normal equation:
 
-   - 在下表面是：$\vec{n}=[0, 0, -1]$
+   - On the top surface is: $\vec{n}=[0, 0, 1]$
 
-   - 在边上为：
+   - On the bottom surface is: $\vec{n}=[0, 0, -1]$
+
+   - On the edges is:
      $$
      \newcommand{\csin}{{\mathbf{cSin}}}
      \vec{n}=[\cos(\theta) · \sqrt{1 - \csin^2}, \sin(\theta) · \sqrt{1 - \csin^2}, \csin]
      $$
-     其中, $\mathbf{cSin} = (r_{\mathrm{lower}} - r_{\mathrm{upper}}) / h$.
+     where, $\mathbf{cSin} = (r_{\mathrm{lower}} - r_{\mathrm{upper}}) / h$.
+     
 
-   具体定义见 [DisplayableCylinder.py](DisplayableCylinder.py).
+   See [DisplayableCylinder.py](DisplayableCylinder.py) for specific definitions.
 
-5. Torus 模型
+4. Torus Model
 
-   Torus 曲面参数方程:
+   Torus surface parameter equation:
    $$
    \left \{
    \begin{aligned}
@@ -123,10 +128,10 @@ The following are the four scenarios of this program:
    \phi \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right),
    \theta \in \left[-\pi, \pi\right),
    $$
-   
-   其中 `a = (outer + inner) / 2`, `b = (outer - inner) / 2`.
-   
-   Torus 曲面法线方程:
+   where `a = (outer + inner) / 2`, `b = (outer - inner) / 2`.
+
+   Torus surface normal equation:
+
    $$
    \left \{
    \begin{aligned}
@@ -138,8 +143,9 @@ The following are the four scenarios of this program:
    \phi \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right),
    \theta \in \left[-\pi, \pi\right),
    $$
-   
-   在标准化后为：
+
+   After normalization it is:
+
    $$
    \DeclareMathOperator{\sign}{sign}
    \DeclareMathOperator{\pat}{pat}
@@ -154,7 +160,8 @@ The following are the four scenarios of this program:
    \phi \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right),
    \theta \in \left[-\pi, \pi\right),
    $$
-   贴图位置：每个点 `[i/nsides, j / rings]`. 其中 `i/nsides` 表示 $\theta$ 的迭代,`j / rings`表示 $\phi$ 的迭代。具体定义见 [DisplayableTorus.py](DisplayableTorus.py).
+
+   Texture mapping position: Each point `[i/nsides, j / rings]`. Where `i/nsides` represents the iteration of $\theta$ and `j / rings` represents the iteration of $\phi$. See [DisplayableTorus.py](https://chat.openai.com/DisplayableTorus.py) for specific definitions.
 
 ## Features Included
 
