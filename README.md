@@ -36,6 +36,126 @@ The following are the four scenarios of this program:
 
     https://user-images.githubusercontent.com/17313035/211105179-6839973b-d054-4b16-8123-666d354238b8.mp4
 
+## Model Design
+
+本程序中使用了以下的模型：
+
+1. 球体模型/椭球模型
+
+   球体曲面参数方程，其中 $r$ 表示球体半径。
+   $$
+   \left \{
+   \begin{aligned}
+   x &= r \cdot \cos(\phi) \cdot \cos (\theta) \\
+   y &= r \cdot \cos(\phi) \cdot \sin (\theta) \\
+   z &= r \cdot \sin(\phi) \\
+   \end{aligned}
+   \right.,
+   \phi \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right),
+   \theta \in \left[-\pi, \pi\right),
+   $$
+
+   法线方程:
+   $$
+   \left \{
+   \begin{aligned}
+   nx &= \cos(\phi) \cdot \cos (\theta) \\
+   ny &= \cos(\phi) \cdot \sin (\theta) \\
+   nz &= \sin(\phi) \\
+   \end{aligned}
+   \right.,
+   \phi \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right),
+   \theta \in \left[-\pi, \pi\right),
+   $$
+
+   贴图位置：每个点 `[j/stacks, i/slices]`. 其中 `j/stacks` 表示 $\theta$ 的迭代,`i/slices`表示 $\phi$ 的迭代。具体定义见 [DisplayableSphere.py](DisplayableSphere.py).
+
+   椭球模型和球体模型的参数非常相似，唯一的区别是将$r$换成了$a$, $b$, $c$，表示椭球三个不同的半径。具体定义见 [DisplayableEllipsoid.py](DisplayableEllipsoid.py).
+
+3. 方体模型
+
+   正方体模型一共8个点，面对不同的面有不同的法向量，均需要手动定义。具体 VBO/EBO 定义请参见[DisplayableCube.py](DisplayableCube.py), 此处不再赘述。
+
+3. 圆柱体/圆锥体模型
+
+   曲面参数方程:
+   $$
+   \newcommand{\low}{{r_{\mathrm{lower}}}}
+   \newcommand{\upp}{{r_{\mathrm{upper}}}}
+   \left \{
+   \begin{aligned}
+   x &= \left(\left(0.5 + \frac{u}{h}\right) · \low + \left(0.5 - \frac{u}{h}\right) · \upp \right) · \cos(\theta) \\
+   y &= \left(\left(0.5 + \frac{u}{h}\right) · \low + \left(0.5 - \frac{u}{h}\right) · \upp \right) · \sin(\theta) \\
+   z &= u \\
+   u &\in \left[-\frac{h}{2}, \frac{h}{2}\right] \\
+   \theta &\in \left[-\pi, \pi\right)
+   \end{aligned}
+   \right.
+   $$
+   其中, $r_{\mathrm{lower}}$ 表示圆锥体的下半径，$r_{\mathrm{upper}}$ 表示圆锥体的上半径。如果两个半径一致，则表现为一个圆柱体。$h$ 是高度。
+
+   法线方程：
+
+   - 在上表面是：$\vec{n}=[0, 0, 1]$
+
+   - 在下表面是：$\vec{n}=[0, 0, -1]$
+
+   - 在边上为：
+     $$
+     \newcommand{\csin}{{\mathbf{cSin}}}
+     \vec{n}=[\cos(\theta) · \sqrt{1 - \csin^2}, \sin(\theta) · \sqrt{1 - \csin^2}, \csin]
+     $$
+     其中, $\mathbf{cSin} = (r_{\mathrm{lower}} - r_{\mathrm{upper}}) / h$.
+
+   具体定义见 [DisplayableCylinder.py](DisplayableCylinder.py).
+
+5. Torus 模型
+
+   Torus 曲面参数方程:
+   $$
+   \left \{
+   \begin{aligned}
+   x &= (a + b \cdot \cos(\phi)) \cdot \cos (\theta) \\
+   y &= (a + b \cdot \cos(\phi)) \cdot \sin (\theta) \\
+   z &= b \cdot \sin(\phi) \\
+   \end{aligned}
+   \right.,
+   \phi \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right),
+   \theta \in \left[-\pi, \pi\right),
+   $$
+   
+   其中 `a = (outer + inner) / 2`, `b = (outer - inner) / 2`.
+   
+   Torus 曲面法线方程:
+   $$
+   \left \{
+   \begin{aligned}
+   nx &= b · \cos(\theta) · \cos(\phi) · (a + b · \cos(\phi)) \\
+   ny &= b · \sin(\theta) · \cos(\phi) · (a + b · \cos(\phi)) \\
+   nz &= b · \sin(\phi) · (a + b · \cos(\phi)) \\
+   \end{aligned}
+   \right.,
+   \phi \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right),
+   \theta \in \left[-\pi, \pi\right),
+   $$
+   
+   在标准化后为：
+   $$
+   \DeclareMathOperator{\sign}{sign}
+   \DeclareMathOperator{\pat}{pat}
+   \left \{
+   \begin{aligned}
+   \pat &= (a + b · \cos(\phi))\\
+   nx &= \sign(b) · \cos(\theta) · \cos(\phi) · \sign(\pat) \\
+   ny &= \sign(b) · \sin(\theta) · \cos(\phi) · \sign(\pat) \\
+   nz &= \sign(b) · \sin(\phi) · \sign(\pat) \\
+   \end{aligned}
+   \right.,
+   \phi \in \left[-\frac{\pi}{2}, \frac{\pi}{2}\right),
+   \theta \in \left[-\pi, \pi\right),
+   $$
+   贴图位置：每个点 `[i/nsides, j / rings]`. 其中 `i/nsides` 表示 $\theta$ 的迭代,`j / rings`表示 $\phi$ 的迭代。具体定义见 [DisplayableTorus.py](DisplayableTorus.py).
+
 ## Features Included
 
 | Requirements                                                           | Done |

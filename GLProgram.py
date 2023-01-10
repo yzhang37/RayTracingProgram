@@ -173,7 +173,6 @@ struct Material{{
     vec4 diffuse;
     vec4 specular;
     float highlight;
-    bool useNormalMap;
 }};
 
 struct Light{{
