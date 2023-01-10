@@ -40,12 +40,12 @@ The following are the four scenarios of this program:
 
 | Requirements                                                           | Done |
 | ---------------------------------------------------------------------- | ---- |
-| Generate Triangle Meshes: Ellipsoid, Torus, and Cylinder with end caps | √    |
-| Implement EBO for defining your meshes                                 | √    |
-| Generate normals for your meshes, and implement normal visualization   | √    |
-| Illuminate your meshes with diffuse, specular, and ambient components  | √    |
-| Support 3 different light types (point, infinite, spotlight)           | √    |
-| Create 3 different scenes                                              | √    |
-| Texture mapping                                                        | √    |
-| Normal mapping                                                         | √    |
+| Generate Triangle Meshes: Ellipsoid, Torus, and Cylinder with end caps | ✅    |
+| Implement EBO for defining your meshes                                 | ✅    |
+| Generate normals for your meshes, and implement normal visualization   | ✅    |
+| Illuminate your meshes with diffuse, specular, and ambient components  | ✅    |
+| Support 3 different light types (point, infinite, spotlight)           | ✅    |
+| Create 3 different scenes                                              | ✅    |
+| Texture mapping                                                        | ✅    |
+| Normal mapping                                                         | ✅    |
 | Artist Rendering                                                       |      |
