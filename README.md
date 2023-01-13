@@ -28,8 +28,8 @@ https://user-images.githubusercontent.com/17313035/212208470-92e19a14-d740-4b26-
 | Keys                      | Functions                                                    |
 | ------------------------- | ------------------------------------------------------------ |
 | Numeric keys (`1` to `9`) | Toggle the light switches in the scene (if the corresponding number exists) |
-| `A`                       | Turn on/off the ambient rendering mode.                      |
-| `S`                       | Turn on/off the specular rendering mode.                     |
+| `A`                       | Turn on/off the ambient rendering mode. Turning off Ambient mode will **cause the image to appear washed out** because all objects will be displayed in their original colors without any dimming ambient light. |
+| `S`                       | Turn on/off the specular rendering mode. Turning off Specular mode will remove the highlight effect from the surfaces of objects. **Please rotate the object to observe the difference in the specular effect on different material surfaces**. |
 | `D`                       | Turn on/off the diffuse rendering mode.                      |
 | `←` / `→`                 | Switch scenes.                                               |
 
