@@ -13,13 +13,15 @@ The following are the four scenarios of this program:
 1. First, please install version 3.8 of Python or install Anaconda/Miniconda.
    - If you choose conda, please use `conda create -n GRAPHICS` after installation to create an environment named GRAPHICS. Then use `conda activate GRAPHICS` to enter that environment.
 2. Use `pip install -r requirements.txt` to install the required packages: PyOpenGL, WxPython, and Numpy.
-3. Run the program by executing the command `Python Sketch.py`
+3. Run the program by executing the command `pythonw Sketch.py`
+
+   > On Mac, please use `python.app`.
 
 If you encounter any problems during the run, please submit an Issue.
 
 ## Demo video:
 
-
+https://user-images.githubusercontent.com/17313035/212208470-92e19a14-d740-4b26-acf5-eb7b32769340.mp4
 
 ## Usage
 
