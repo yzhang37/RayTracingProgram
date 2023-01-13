@@ -8,6 +8,19 @@ The following are the four scenarios of this program:
 
 ![Scene Introduction](image/scene_intro.gif)
 
+## Instructions for running the program:
+
+1. First, please install version 3.8 of Python or install Anaconda/Miniconda.
+   - If you choose conda, please use `conda create -n GRAPHICS` after installation to create an environment named GRAPHICS. Then use `conda activate GRAPHICS` to enter that environment.
+2. Use `pip install -r requirements.txt` to install the required packages: PyOpenGL, WxPython, and Numpy.
+3. Run the program by executing the command `Python Sketch.py`
+
+If you encounter any problems during the run, please submit an Issue.
+
+## Demo video:
+
+
+
 ## Usage
 
 | Keys                      | Functions                                                    |
